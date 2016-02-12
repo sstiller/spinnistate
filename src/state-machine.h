@@ -12,8 +12,17 @@
 
 namespace ssm // "Spinni state machine"
 {
+  class StateMachine;
+}
 
-class StateMachine
+// local includes
+#include "state.h"
+#include "state-container.h"
+
+namespace ssm // "Spinni state machine"
+{
+
+class StateMachine : public StateContainer
 {
 public:
   /** Constructor.
