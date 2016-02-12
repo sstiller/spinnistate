@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+includedir=@includedir@/libspinnistate-0.1
+
+Name: libspinnistate
+Description: Dynamic and hierarchical C++11 state machine library
+Version: @VERSION@
+Requires: 
+Libs: -L${libdir} -lspinnistate -lboost_system
+Cflags: -I${includedir}
