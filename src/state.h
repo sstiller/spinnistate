@@ -37,6 +37,8 @@ public:
   virtual State& getState(const std::string name, bool create = false) override;
 
   const std::string& getName() const;
+  State* getParent();
+  
 protected:
   void setParent(State *parent);
 //TODO add-Methoden hier überschreiben und parent setzen?

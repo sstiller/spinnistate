@@ -41,6 +41,11 @@ const std::string& State::getName() const
   return(name);
 }
 
+State* State::getParent()
+{
+  return(parentState);
+}
+
 void State::setParent(State *parent)
 {
   parentState = parent;

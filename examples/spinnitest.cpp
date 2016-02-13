@@ -11,24 +11,35 @@ int main(void)
 {
   boost::asio::io_service ioService;
   ssm::StateMachine stateMachine(ioService);
-  ssm::State& hallo1State = stateMachine.getState("Hallo1", true);
-  ssm::State& hallo12State = hallo1State.getState("Hallo12", true);
-  // test exception
+
+  // adding (sub)states
+  ssm::State& hello1State = stateMachine.getState("Hello1", true);
+  ssm::State& hello12State = hello1State.getState("Hello12", true);
+  
+  // check parents
+  if(&hello1State != hello12State.getParent())
+  {
+    std::cerr << "Error: Wrong parent." << std::endl;
+    return(1);
+  }
+  std::cout << "OK: Parent correct." << std::endl;
+     
+  // test exceptions
   try{
-    hallo1State.getState("unknown");
-    std::cerr << "No Exception 1. Error." << std::endl;
+    hello1State.getState("unknown");
+    std::cerr << "Error: No Exception 1." << std::endl;
     return(1);
   }catch(std::exception& exc)
   {
-    std::cout << "Exception 1 caught. OK. (" << exc.what() << std::endl;
+    std::cout << "OK: Exception 1 caught. (" << exc.what() << std::endl;
   }
   try{
-    hallo1State.getState("", true);
-    std::cerr << "No Exception 2. Error." << std::endl;
+    hello1State.getState("", true);
+    std::cerr << "Error: No Exception 2." << std::endl;
     return(1);
   }catch(std::exception& exc)
   {
-    std::cout << "Exception 2 caught. OK. (" << exc.what() << std::endl;
+    std::cout << "OK: Exception 2 caught. (" << exc.what() << std::endl;
   }
 
   ioService.run();
