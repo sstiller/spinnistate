@@ -41,7 +41,7 @@ void StateContainer::addState(State* newState)
   containedStates[newState->getName()] = std::shared_ptr<State>(newState);  
 }
 
-void StateContainer::addState(const std::string& name) noexcept
+void StateContainer::addState(const std::string& name)
 {
   if (containedStates.find(name) == containedStates.end())
   {

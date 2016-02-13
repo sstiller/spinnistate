@@ -45,8 +45,9 @@ public:
   /** Creates a new (sub)state and adds it to the container.
    * If a state with the given name already exists, no new state is created.
    * @param name The name of the new state.
+   * @throws std::invalid_argument if the name is not valid (empty)
    */
-  void addState(const std::string& name) noexcept;
+  void addState(const std::string& name);
   
   /** get a state from the container
    * @param name the name of the wanted state
