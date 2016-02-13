@@ -9,13 +9,20 @@
 namespace ssm // "Spinni state machine"
 {
 
-State::State(const std::string& name)
-: name(name)
+State::State(const std::string& name, State* parent)
+: name(name),
+  parentState(parent)
 {
   if(name.size() == 0)
   {
     throw(std::invalid_argument("No valid name given!"));
   }
+}
+
+State::State(const State& srcState, State* parent)
+: name(srcState.name),
+  parentState(parent)
+{
 }
 
 State::~State()
@@ -25,6 +32,11 @@ State::~State()
 const std::string& State::getName() const
 {
   return(name);
+}
+
+void State::setParent(State *parent)
+{
+  parentState = parent;
 }
 
 } // namespace ssm

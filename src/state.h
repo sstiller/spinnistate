@@ -30,15 +30,18 @@ public:
    * @param name the name of the new state
    * @throws std::invalid_argument if name not valid (empty)
    */
-  State(const std::string& name);
+  State(const std::string& name, State* parent = nullptr);
+  State(const State& srcState, State* parent = nullptr);
   virtual ~State();
   
   const std::string& getName() const;
-
 protected:
-
+  void setParent(State *parent);
+//TODO add-Methoden hier überschreiben und parent setzen?
+//TODO evtl parent als optionaler Parameter in StateContainer mit rein
 private:
   std::string name;
+  State *parentState;
 
 };
 

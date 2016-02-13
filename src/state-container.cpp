@@ -22,38 +22,12 @@ StateContainer::~StateContainer()
   // TODO: Add implementation here
 }
 
-void StateContainer::addState(const State& newState)
+State& StateContainer::getState(const std::string name, bool create)
 {
-  auto it = containedStates.find(newState.getName());
-  if (it != containedStates.end())
+  if(create && (containedStates.find(name) == containedStates.end()))
   {
-    throw(std::logic_error("State with given name already exists!"));
-  }
-  containedStates[newState.getName()] = std::make_shared<State>(newState);
-}
-
-void StateContainer::addState(State* newState)
-{
-  if (containedStates.find(newState->getName()) != containedStates.end())
-  {
-    throw(std::logic_error("State with given name already exists!"));
-  }
-  containedStates[newState->getName()] = std::shared_ptr<State>(newState);  
-}
-
-void StateContainer::addState(const std::string& name)
-{
-  if (containedStates.find(name) == containedStates.end())
-  {
-    addState(new State(name));
-  }
-}  
-
-std::shared_ptr<State> StateContainer::getState(const std::string name, bool create)
-{
-  if(create)
-  {
-    addState(name);
+    State newState(name);
+    containedStates.insert(std::pair<std::string, State>(name, newState));
   }
   return(containedStates.at(name));
 }

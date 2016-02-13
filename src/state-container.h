@@ -30,34 +30,16 @@ public:
   StateContainer();
   virtual ~StateContainer();
 
-  /** Adds a new (sub)state to the container.
-   * @param newState The state to add. The state is copied into the local container.
-   * @throws std::logic_error if a state with the same name already exists
-   */
-  void addState(const State& newState);
-
-  /** Adds a new (sub)state to the container.
-   * @param newState The state to add. container now owns the state and deletes it if not needed anymore.
-   * @throws std::logic_error if a state with the same name already exists
-   */
-  void addState(State* newState);
-  
-  /** Creates a new (sub)state and adds it to the container.
-   * If a state with the given name already exists, no new state is created.
-   * @param name The name of the new state.
-   * @throws std::invalid_argument if the name is not valid (empty)
-   */
-  void addState(const std::string& name);
-  
   /** get a state from the container
    * @param name the name of the wanted state
    * @param create if true, the requested state is created and added to lhe local container if not existing
    * @throws std::out_of_range if the requested state is not existing and create == false 
+   * @return reference to the requested state
    */
-  std::shared_ptr<State> getState(const std::string name, bool create = false);
+  State& getState(const std::string name, bool create = false);
   
 protected:
-  std::map<std::string, std::shared_ptr<State> > containedStates;
+  std::map<std::string, State> containedStates;
 
 private:
 
