@@ -18,11 +18,12 @@ namespace ssm // "Spinni state machine"
 
 // local includes
 #include "state-container.h"
+#include "action-container.h"
 
 namespace ssm // "Spinni state machine"
 {
 
-class State : public StateContainer
+class State : public StateContainer, public ActionContainer
 {
 public:
   State() = delete;
@@ -41,10 +42,9 @@ public:
   
 protected:
   void setParent(State *parent);
-//TODO add-Methoden hier überschreiben und parent setzen?
-//TODO evtl parent als optionaler Parameter in StateContainer mit rein
+
 private:
-  std::string name;
+  std::string name; ///< name of this state
   State *parentState;
 
 };

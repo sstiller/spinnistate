@@ -23,7 +23,23 @@ int main(void)
     return(1);
   }
   std::cout << "OK: Parent correct." << std::endl;
-     
+
+  // test action container
+  hello1State.setOnEntryAction("OnEntryFunction");
+  hello1State.setOnExitAction("OnExitFunction");
+  if(hello1State.getOnEntryAction() != "OnEntryFunction")
+  {
+    std::cerr << "Error: OnEntry wrong!." << std::endl;
+    return(1);
+  }
+  std::cout << "OK: OnEntry correct." << std::endl;
+  if(hello1State.getOnExitAction() != "OnExitFunction")
+  {
+    std::cerr << "Error: OnExit wrong!." << std::endl;
+    return(1);
+  }
+  std::cout << "OK: OnExit correct." << std::endl;
+
   // test exceptions
   try{
     hello1State.getState("unknown");
