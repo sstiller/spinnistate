@@ -33,7 +33,9 @@ public:
   State(const std::string& name, State* parent = nullptr);
   State(const State& srcState, State* parent = nullptr);
   virtual ~State();
-  
+
+  virtual State& getState(const std::string name, bool create = false) override;
+
   const std::string& getName() const;
 protected:
   void setParent(State *parent);

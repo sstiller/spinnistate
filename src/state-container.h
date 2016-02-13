@@ -36,7 +36,7 @@ public:
    * @throws std::out_of_range if the requested state is not existing and create == false 
    * @return reference to the requested state
    */
-  State& getState(const std::string name, bool create = false);
+  virtual State& getState(const std::string name, bool create = false);
   
 protected:
   std::map<std::string, State> containedStates;

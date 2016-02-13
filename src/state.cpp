@@ -29,6 +29,13 @@ State::~State()
 {
 }
 
+State& State::getState(const std::string name, bool create)
+{
+  State& retState = StateContainer::getState(name, create);
+  retState.setParent(this);
+  return(retState);
+}
+
 const std::string& State::getName() const
 {
   return(name);
