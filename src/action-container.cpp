@@ -4,13 +4,14 @@
  * Copyright (C) 2016 Sandro Stiller <sandro.stiller@gmx.de>
  *
  */
-
+#include "state-machine.h"
 #include "action-container.h"
 
 namespace ssm // "Spinni state machine"
 {
   
-ActionContainer::ActionContainer()
+ActionContainer::ActionContainer(StateMachine& stateMachine)
+: stateMachine(stateMachine)
 {
 }
 
@@ -28,10 +29,19 @@ const std::string& ActionContainer::getOnEntryAction()
 {
   return(onEntryAction);
 }
-
 const std::string& ActionContainer::getOnExitAction()
 {
   return(onExitAction);
+}
+
+void ActionContainer::executeOnEntry()
+{
+  stateMachine.executeAction(onEntryAction);
+}
+
+void ActionContainer::executeOnExit()
+{
+  stateMachine.executeAction(onExitAction);
 }
 
 } // namespace ssm

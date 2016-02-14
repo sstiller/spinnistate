@@ -12,27 +12,36 @@ namespace ssm // "Spinni state machine"
 {
 
 
-StateContainer::StateContainer()
+StateContainer::StateContainer(StateMachine& stateMachine)
+: entryState(nullptr),
+  stateMachine(stateMachine)  
 {
-  // TODO: Add implementation here
 }
 
 StateContainer::~StateContainer()
 {
-  // TODO: Add implementation here
 }
 
-State& StateContainer::getState(const std::string name, bool create)
+State& StateContainer::addState(const std::string name, State* parentState)
 {
-  if(create && (containedStates.find(name) == containedStates.end()))
+  if(existingStates.find(name) != existingStates.end())
   {
-    State newState(name);
-    containedStates.insert(std::pair<std::string, State>(name, newState));
+    throw(std::logic_error("State with the given name already exists!"));
   }
-  return(containedStates.at(name));
+  
+  existingStates.insert(std::pair<std::string, State>(name, State(name, stateMachine, parentState)));
+  stateMachine.announceState(existingStates.at(name));
+  if(existingStates.size() == 1)
+  {
+    // take the first state as antry state
+    entryState = &existingStates.at(name);
+  }
+  return(existingStates.at(name));
 }
 
+State& StateContainer::findState(const std::string name)
+{
+  return(existingStates.at(name));
+}
 
 } // namespace ssm
-
-

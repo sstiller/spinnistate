@@ -9,20 +9,21 @@
 namespace ssm // "Spinni state machine"
 {
 
-State::State(const std::string& name, State* parent)
-: name(name),
+State::State(const std::string& name, StateMachine& stateMachine, State* parent)
+: StateContainer(stateMachine),
+  ActionContainer(stateMachine),
+  name(name),
+  stateMachine(stateMachine),
   parentState(parent)
 {
   if(name.size() == 0)
   {
     throw(std::invalid_argument("No valid name given!"));
   }
-}
-
-State::State(const State& srcState, State* parent)
-: name(srcState.name),
-  parentState(parent)
-{
+  if(stateMachine.stateExists(name))
+  {
+    throw(std::invalid_argument("State with given name already exists!"));
+  }
 }
 
 State::~State()
@@ -31,9 +32,17 @@ State::~State()
 
 State& State::getState(const std::string name, bool create)
 {
-  State& retState = StateContainer::getState(name, create);
-  retState.setParent(this);
-  return(retState);
+  try{
+    return(findState(name));
+  }catch(std::out_of_range)
+  {
+    if(!create)
+    {
+      throw;
+    }
+  }
+
+  return(addState(name, this));
 }
 
 const std::string& State::getName() const
@@ -46,9 +55,21 @@ State* State::getParent()
   return(parentState);
 }
 
-void State::setParent(State *parent)
+void State::enter()
 {
-  parentState = parent;
+  executeOnEntry();
+  if(entryState)
+  {
+    std::cout << "State " << name << " is entering substate." << std::endl;
+    entryState->enter();
+  }else{
+    std::cout << "State " << name << " is waiting for events." << std::endl;
+  }  
+}
+
+void State::leave()
+{
+  executeOnExit();
 }
 
 } // namespace ssm

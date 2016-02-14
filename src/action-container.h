@@ -13,22 +13,32 @@
 
 namespace ssm // "Spinni state machine"
 {
+  class ActionContainer;
+}
+
+// local includes
+#include "state-machine.h"
+
+namespace ssm // "Spinni state machine"
+{
 
 class ActionContainer
 {
 public:
-  ActionContainer();
+  ActionContainer() = delete;
+  ActionContainer(StateMachine& stateMachine);
   void setOnEntryAction(const std::string& actionCommand);
   void setOnExitAction(const std::string& actionCommand);
   const std::string& getOnEntryAction();
   const std::string& getOnExitAction();
-
 protected:
+  void executeOnEntry();
+  void executeOnExit();
 
 private:
   std::string onEntryAction;
   std::string onExitAction;
-
+  StateMachine& stateMachine;
 };
 
 } // namespace ssm

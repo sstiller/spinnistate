@@ -17,7 +17,8 @@ libspinnistate_la_SOURCES = \
 	state.cpp \
 	state-machine.cpp \
 	state-container.cpp \
-	action-container.cpp
+	action-container.cpp \
+	data-model.cpp
 
 libspinnistate_la_LDFLAGS = 
 
@@ -28,7 +29,8 @@ include_HEADERS = \
 	state-machine.h \
 	state.h \
 	state-container.h \
-	action-container.h
+	action-container.h \
+	data-model.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libspinnistate.pc

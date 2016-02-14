@@ -17,6 +17,7 @@ namespace ssm // "Spinni state machine"
 }
 
 // local includes
+#include "state-machine.h"
 #include "state-container.h"
 #include "action-container.h"
 
@@ -27,26 +28,27 @@ class State : public StateContainer, public ActionContainer
 {
 public:
   State() = delete;
+  //State(State&&) = default;
   /** Create a new state
    * @param name the name of the new state
-   * @throws std::invalid_argument if name not valid (empty)
+   * @param stateMachine the state machine the state belongs to
+   * @throws std::invalid_argument if name or stateMachine not valid or a state with the same name already exists 
    */
-  State(const std::string& name, State* parent = nullptr);
-  State(const State& srcState, State* parent = nullptr);
+  State(const std::string& name, StateMachine& stateMachine, State* parent = nullptr);
   virtual ~State();
 
   virtual State& getState(const std::string name, bool create = false) override;
 
   const std::string& getName() const;
   State* getParent();
-  
-protected:
-  void setParent(State *parent);
+
+  void enter();
+  void leave();
 
 private:
   std::string name; ///< name of this state
-  State *parentState;
-
+  StateMachine& stateMachine; ///< needed for actions and evaluations of transition conditions 
+  State* parentState; ///< nullptr if no parent state
 };
 
 } // namespace ssm

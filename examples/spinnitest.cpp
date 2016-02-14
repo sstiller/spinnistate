@@ -6,11 +6,13 @@
 
 // local includes
 #include "../src/libspinnistate.h"
+#include "../src/data-model.h"
 
 int main(void)
 {
   boost::asio::io_service ioService;
-  ssm::StateMachine stateMachine(ioService);
+  ssm::DataModel dataModel;
+  ssm::StateMachine stateMachine(ioService, dataModel);
 
   // adding (sub)states
   ssm::State& hello1State = stateMachine.getState("Hello1", true);
@@ -43,22 +45,33 @@ int main(void)
   // test exceptions
   try{
     hello1State.getState("unknown");
-    std::cerr << "Error: No Exception 1." << std::endl;
+    std::cerr << "Error: No Exception 1 (get not existing state)." << std::endl;
     return(1);
   }catch(std::exception& exc)
   {
-    std::cout << "OK: Exception 1 caught. (" << exc.what() << std::endl;
+    std::cout << "OK: Exception 1 caught: " << exc.what() << std::endl;
   }
   try{
     hello1State.getState("", true);
-    std::cerr << "Error: No Exception 2." << std::endl;
+    std::cerr << "Error: No Exception 2 (invalid state name))." << std::endl;
     return(1);
   }catch(std::exception& exc)
   {
-    std::cout << "OK: Exception 2 caught. (" << exc.what() << std::endl;
+    std::cout << "OK: Exception 2 caught: " << exc.what() << std::endl;
+  }
+  try{
+    hello12State.getState("Hello1", true);
+    std::cerr << "Error: No Exception 3 (double state name)." << std::endl;
+    return(1);
+  }catch(std::exception& exc)
+  {
+    std::cout << "OK: Exception 3 caught: " << exc.what() << std::endl;
   }
 
-  ioService.run();
+  // start machine
+  stateMachine.start();
+  
+//  ioService.run();
   
   return(0);
 }
