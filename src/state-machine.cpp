@@ -22,7 +22,7 @@ StateMachine::~StateMachine()
 {
 }
 
-State& StateMachine::getState(const std::string name, bool create)
+State* StateMachine::getState(const std::string name, bool create)
 {
   try{
     return(findState(name));
@@ -37,19 +37,19 @@ State& StateMachine::getState(const std::string name, bool create)
   return(addState(name, nullptr));
 }
 
-void StateMachine::announceState(State& newState)
+void StateMachine::announceState(State* newState)
 {
   // Check if name already exists and add to global state list  
-  if(stateExists(newState.getName()))
+  if(stateExists(newState->getName()))
   {
     throw(std::logic_error("State name already in references list!")); 
   }
-  stateReferences.insert(std::pair<std::string, State&>(newState.getName(), newState));  
+  statePointers.insert(std::pair<std::string, State*>(newState->getName(), newState));  
 }
 
 bool StateMachine::stateExists(const std::string& name)
 {
-  return(stateReferences.find(name) != stateReferences.end());
+  return(statePointers.find(name) != statePointers.end());
 }
 
 DataModel& StateMachine::getDataModel()

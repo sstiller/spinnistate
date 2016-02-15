@@ -21,7 +21,7 @@ libspinnistate_la_SOURCES = \
 	action-container.cpp \
 	data-model.cpp \
 	chai-script-data-model.cpp \
-	chai-script-data-model.h
+	transition.cpp 
 
 libspinnistate_la_LDFLAGS = 
 
@@ -34,7 +34,9 @@ include_HEADERS = \
 	state.h \
 	state-container.h \
 	action-container.h \
-	data-model.h
+	data-model.h \
+	chai-script-data-model.h \
+	transition.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libspinnistate.pc

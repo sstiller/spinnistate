@@ -22,7 +22,7 @@ StateContainer::~StateContainer()
 {
 }
 
-State& StateContainer::addState(const std::string name, State* parentState)
+State* StateContainer::addState(const std::string name, State* parentState)
 {
   if(existingStates.find(name) != existingStates.end())
   {
@@ -30,18 +30,18 @@ State& StateContainer::addState(const std::string name, State* parentState)
   }
   
   existingStates.insert(std::pair<std::string, State>(name, State(name, stateMachine, parentState)));
-  stateMachine.announceState(existingStates.at(name));
+  stateMachine.announceState(&existingStates.at(name));
   if(existingStates.size() == 1)
   {
     // take the first state as antry state
     entryState = &existingStates.at(name);
   }
-  return(existingStates.at(name));
+  return(&existingStates.at(name));
 }
 
-State& StateContainer::findState(const std::string name)
+State* StateContainer::findState(const std::string name)
 {
-  return(existingStates.at(name));
+  return(&existingStates.at(name));
 }
 
 } // namespace ssm

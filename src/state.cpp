@@ -30,7 +30,7 @@ State::~State()
 {
 }
 
-State& State::getState(const std::string name, bool create)
+State* State::getState(const std::string name, bool create)
 {
   try{
     return(findState(name));
@@ -41,8 +41,12 @@ State& State::getState(const std::string name, bool create)
       throw;
     }
   }
-
   return(addState(name, this));
+}
+
+void State::addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard)
+{
+  transitions.push_back(Transition(name, this, dstState, triggerName, guard));
 }
 
 const std::string& State::getName() const
@@ -53,6 +57,11 @@ const std::string& State::getName() const
 State* State::getParent()
 {
   return(parentState);
+}
+
+StateMachine& State::getStateMachine()
+{
+  return(stateMachine);
 }
 
 void State::enter()

@@ -33,13 +33,13 @@ public:
   StateMachine(boost::asio::io_service& ioService, DataModel& dataModel);
   virtual ~StateMachine();
 
-  State& getState(const std::string name, bool create = false) override;
+  State* getState(const std::string name, bool create = false) override;
 
   /** add a reference to a created state to the local list
    * @param newState the new state reference to store
    * @throws std::logic_error if a state with the same name already exists
    */
-  void announceState(State& newState);
+  void announceState(State* newState);
   bool stateExists(const std::string& name);
 
   /** returns a reference to the data model.
@@ -59,7 +59,7 @@ protected:
 
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states
-  std::map <std::string, State&> stateReferences;
+  std::map <std::string, State*> statePointers;
   DataModel& dataModel;
 };
 

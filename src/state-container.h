@@ -37,7 +37,7 @@ public:
    * @throws std::out_of_range if the requested state is not existing and create == false 
    * @return reference to the requested state
    */
-  virtual State& getState(const std::string name, bool create = false) = 0;
+  virtual State* getState(const std::string name, bool create = false) = 0;
   
   protected:
   /** Create a new state and put it to the local container.
@@ -48,14 +48,14 @@ public:
    * @throws std::logic_error if a state with the given name already exists 
    * @return reference to the requested state
    */
-  State& addState(const std::string name, State* parentState);
+  State* addState(const std::string name, State* parentState);
 
   /** get a state from the container
    * @param name the name of the wanted state
    * @throws std::out_of_range if the requested state is not existing 
    * @return reference to the requested state
    */
-  State& findState(const std::string name);
+  State* findState(const std::string name);
   
 protected:
   std::map<std::string, State> existingStates;
