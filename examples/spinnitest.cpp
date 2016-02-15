@@ -70,13 +70,13 @@ int main(void)
 
   // data model
   try{
-    bool result = dataModel.evaluateBool("1 < 3");
+    bool result = stateMachine.getDataModel().evaluateBool("1 < 3");
     if(!result)
     {
       std::cerr << "Error: dataModel.evaluateBool(\"1 < 3\") returned false." << std::endl;
       return(1);
     }
-    result = dataModel.evaluateBool("4 < 3");
+    result = stateMachine.getDataModel().evaluateBool("4 < 3");
     if(result)
     {
       std::cerr << "Error: dataModel.evaluateBool(\"4 < 3\") returned true." << std::endl;

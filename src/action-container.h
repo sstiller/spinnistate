@@ -39,6 +39,7 @@ private:
   std::string onEntryAction;
   std::string onExitAction;
   StateMachine& stateMachine;
+  DataModel& dataModel;
 };
 
 } // namespace ssm

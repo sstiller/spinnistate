@@ -25,6 +25,7 @@ public:
   ~ChaiScriptDataModel();
 
   bool evaluateBool(const std::string& expression) override;
+  void executeAction(const std::string& actionString) override;
 
 private:
   chaiscript::ChaiScript chai;

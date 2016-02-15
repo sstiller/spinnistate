@@ -32,5 +32,14 @@ bool ChaiScriptDataModel::evaluateBool(const std::string& expression)
   
 }
 
+void ChaiScriptDataModel::executeAction(const std::string& actionString)
+{
+  if(actionString.empty())
+  {
+    return;
+  }
+  //TODO: forward to data model
+  std::cout << __PRETTY_FUNCTION__ << "() Implement me: execute \"" << actionString << "\"." << std::endl;
+}
 
 } // namespace ssm

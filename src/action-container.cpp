@@ -11,7 +11,8 @@ namespace ssm // "Spinni state machine"
 {
   
 ActionContainer::ActionContainer(StateMachine& stateMachine)
-: stateMachine(stateMachine)
+: stateMachine(stateMachine),
+  dataModel(stateMachine.getDataModel())
 {
 }
 
@@ -36,12 +37,12 @@ const std::string& ActionContainer::getOnExitAction()
 
 void ActionContainer::executeOnEntry()
 {
-  stateMachine.executeAction(onEntryAction);
+  dataModel.executeAction(onEntryAction);
 }
 
 void ActionContainer::executeOnExit()
 {
-  stateMachine.executeAction(onExitAction);
+  dataModel.executeAction(onExitAction);
 }
 
 } // namespace ssm

@@ -16,9 +16,9 @@ namespace ssm // "Spinni state machine"
 }
 
 // local includes
+#include "data-model.h"
 #include "state.h"
 #include "state-container.h"
-#include "data-model.h"
 
 namespace ssm // "Spinni state machine"
 {
@@ -41,8 +41,12 @@ public:
    */
   void announceState(State& newState);
   bool stateExists(const std::string& name);
-  void executeAction(const std::string& actionString);
 
+  /** returns a reference to the data model.
+   * Needed to evaluate conditions for transitions and to execute actions
+   */
+  DataModel& getDataModel();
+  
   /** Starts the state machine and enters the entry state
    * @throws std::logic_error if there is no valid entry state
    */

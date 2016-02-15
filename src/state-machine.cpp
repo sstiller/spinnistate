@@ -52,14 +52,9 @@ bool StateMachine::stateExists(const std::string& name)
   return(stateReferences.find(name) != stateReferences.end());
 }
 
-void StateMachine::executeAction(const std::string& actionString)
+DataModel& StateMachine::getDataModel()
 {
-  if(actionString.empty())
-  {
-    return;
-  }
-  //TODO: forward to data model
-  std::cout << __func__ << "() Implement me: execute \"" << actionString << "\"." << std::endl;
+  return(dataModel);
 }
 
 void StateMachine::start()
