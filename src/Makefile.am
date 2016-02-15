@@ -2,6 +2,7 @@
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
+	$(CHAISCRIPT_CFLAGS) \
 	-DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\"
 
 AM_CXXFLAGS =\
@@ -18,11 +19,14 @@ libspinnistate_la_SOURCES = \
 	state-machine.cpp \
 	state-container.cpp \
 	action-container.cpp \
-	data-model.cpp
+	data-model.cpp \
+	chai-script-data-model.cpp \
+	chai-script-data-model.h
 
 libspinnistate_la_LDFLAGS = 
 
-libspinnistate_la_LIBADD = 
+libspinnistate_la_LIBADD =  \
+	$(CHAISCRIPT_LIBS)
 
 include_HEADERS = \
 	libspinnistate.h \

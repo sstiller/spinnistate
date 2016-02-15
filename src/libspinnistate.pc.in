@@ -8,6 +8,6 @@ includedir=@includedir@/libspinnistate-0.1
 Name: libspinnistate
 Description: Dynamic and hierarchical C++11 state machine library
 Version: @VERSION@
-Requires: 
-Libs: -L${libdir} -lspinnistate -lboost_system
+Requires: chaiscript
+Libs: -L${libdir} -lspinnistate -lboost_system -ldl
 Cflags: -I${includedir}

@@ -20,7 +20,7 @@ public:
   virtual ~DataModel();
 
   // to be implemented by inheriting classes
-  //virtual bool evaluateBool(coinst std::string& expression) = 0; //TODO: replace by template function for return value?
+  virtual bool evaluateBool(const std::string& expression) = 0; //TODO: replace by template function for return value?
   
 /*TODO:
  * Virtual class for implementation

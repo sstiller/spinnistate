@@ -28,6 +28,8 @@ LT_INIT
 
 
 
+PKG_CHECK_MODULES(CHAISCRIPT,chaiscript)
+
 AC_OUTPUT([
 Makefile
 src/libspinnistate.pc

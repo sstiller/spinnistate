@@ -6,12 +6,12 @@
 
 // local includes
 #include "../src/libspinnistate.h"
-#include "../src/data-model.h"
+#include "../src/chai-script-data-model.h"
 
 int main(void)
 {
   boost::asio::io_service ioService;
-  ssm::DataModel dataModel;
+  ssm::ChaiScriptDataModel dataModel;
   ssm::StateMachine stateMachine(ioService, dataModel);
 
   // adding (sub)states
@@ -67,6 +67,26 @@ int main(void)
   {
     std::cout << "OK: Exception 3 caught: " << exc.what() << std::endl;
   }
+
+  // data model
+  try{
+    bool result = dataModel.evaluateBool("1 < 3");
+    if(!result)
+    {
+      std::cerr << "Error: dataModel.evaluateBool(\"1 < 3\") returned false." << std::endl;
+      return(1);
+    }
+    result = dataModel.evaluateBool("4 < 3");
+    if(result)
+    {
+      std::cerr << "Error: dataModel.evaluateBool(\"4 < 3\") returned true." << std::endl;
+      return(1);
+    }
+  }catch(std::exception& exc)
+  {
+    std::cout << "Error: Exception caught for ChaiScriptDataModel Bool eval: " << exc.what() << std::endl;
+  }
+  std::cout << "OK: ChaiScriptDataModel" << std::endl;
 
   // start machine
   stateMachine.start();
