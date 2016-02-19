@@ -7,6 +7,10 @@ spinnitest_SOURCES =  \
 	spinnitest.cpp
 
 spinnitest_CXXFLAGS = \
+  -Wall\
+  -ggdb2 \
+  -Wall \
+  -Wextra \
   -std=c++11 \
   $(CHAISCRIPT_CFLAGS) 
 

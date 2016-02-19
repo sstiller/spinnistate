@@ -10,12 +10,16 @@
 namespace ssm // "Spinni state machine"
 {
   
-StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel& dataModel)
-: StateContainer(*this),
+StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel* dataModel)
+: StateContainer(this),
   ioService(ioService),
   currentState(nullptr),
   dataModel(dataModel)
 {
+  if(!dataModel)
+  {
+    throw(std::invalid_argument("Data model nullptr."));
+  }
 }
 
 StateMachine::~StateMachine()
@@ -49,10 +53,11 @@ void StateMachine::announceState(State* newState)
 
 bool StateMachine::stateExists(const std::string& name)
 {
-  return(statePointers.find(name) != statePointers.end());
+  auto stateIt = statePointers.find(name);
+  return(stateIt != statePointers.end());
 }
 
-DataModel& StateMachine::getDataModel()
+DataModel* StateMachine::getDataModel()
 {
   return(dataModel);
 }

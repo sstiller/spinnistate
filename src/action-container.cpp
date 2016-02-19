@@ -10,10 +10,18 @@
 namespace ssm // "Spinni state machine"
 {
   
-ActionContainer::ActionContainer(StateMachine& stateMachine)
+ActionContainer::ActionContainer(StateMachine* stateMachine)
 : stateMachine(stateMachine),
-  dataModel(stateMachine.getDataModel())
+  dataModel(stateMachine->getDataModel())
 {
+  if(!stateMachine)
+  {
+    throw(std::invalid_argument("StateMachine nullptr."));
+  }  
+  if(!dataModel)
+  {
+    throw(std::invalid_argument("DataModel nullptr."));
+  }  
 }
 
 void ActionContainer::setOnEntryAction(const std::string& actionCommand)
@@ -37,12 +45,12 @@ const std::string& ActionContainer::getOnExitAction()
 
 void ActionContainer::executeOnEntry()
 {
-  dataModel.executeAction(onEntryAction);
+  dataModel->executeAction(onEntryAction);
 }
 
 void ActionContainer::executeOnExit()
 {
-  dataModel.executeAction(onExitAction);
+  dataModel->executeAction(onExitAction);
 }
 
 } // namespace ssm

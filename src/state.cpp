@@ -9,20 +9,24 @@
 namespace ssm // "Spinni state machine"
 {
 
-State::State(const std::string& name, StateMachine& stateMachine, State* parent)
+State::State(const std::string& name, StateMachine* stateMachine, State* parent)
 : StateContainer(stateMachine),
   ActionContainer(stateMachine),
   name(name),
   stateMachine(stateMachine),
   parentState(parent)
 {
+  if(!stateMachine)
+  {
+    throw(std::invalid_argument("StateMachine nullptr."));
+  }
   if(name.size() == 0)
   {
-    throw(std::invalid_argument("No valid name given!"));
+    throw(std::invalid_argument("No valid name given."));
   }
-  if(stateMachine.stateExists(name))
+  if(stateMachine->stateExists(name))
   {
-    throw(std::invalid_argument("State with given name already exists!"));
+    throw(std::invalid_argument("State with given name already exists."));
   }
 }
 
@@ -44,9 +48,10 @@ State* State::getState(const std::string name, bool create)
   return(addState(name, this));
 }
 
-void State::addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard)
+Transition* State::addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard)
 {
-  transitions.push_back(Transition(name, this, dstState, triggerName, guard));
+  transitions.push_back(Transition(name, stateMachine, this, dstState, triggerName, guard));
+  return(&transitions.back());
 }
 
 const std::string& State::getName() const
@@ -59,7 +64,7 @@ State* State::getParent()
   return(parentState);
 }
 
-StateMachine& State::getStateMachine()
+StateMachine* State::getStateMachine()
 {
   return(stateMachine);
 }

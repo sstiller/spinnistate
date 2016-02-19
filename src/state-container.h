@@ -28,7 +28,7 @@ namespace ssm // "Spinni state machine"
 class StateContainer
 {
 public:
-  StateContainer(StateMachine& stateMachine);
+  StateContainer(StateMachine* stateMachine);
   virtual ~StateContainer();
   
   /** get a state from the container
@@ -55,14 +55,14 @@ public:
    * @throws std::out_of_range if the requested state is not existing 
    * @return reference to the requested state
    */
-  State* findState(const std::string name);
-  
+  State* findState(const std::string& name);
+
 protected:
   std::map<std::string, State> existingStates;
   State* entryState;
 
 private:
-  StateMachine& stateMachine;
+  StateMachine* stateMachine;
 };
 
 } // namespace ssm

@@ -26,7 +26,8 @@ class ActionContainer
 {
 public:
   ActionContainer() = delete;
-  ActionContainer(StateMachine& stateMachine);
+  ActionContainer(StateMachine* stateMachine);
+  
   void setOnEntryAction(const std::string& actionCommand);
   void setOnExitAction(const std::string& actionCommand);
   const std::string& getOnEntryAction();
@@ -38,8 +39,8 @@ protected:
 private:
   std::string onEntryAction;
   std::string onExitAction;
-  StateMachine& stateMachine;
-  DataModel& dataModel;
+  StateMachine* stateMachine;
+  DataModel* dataModel;
 };
 
 } // namespace ssm

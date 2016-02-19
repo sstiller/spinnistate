@@ -27,10 +27,11 @@ class StateMachine : public StateContainer
 {
 public:
   StateMachine() = delete;
+  StateMachine(const StateMachine&) = delete;
   /** Constructor.
    * @param ioService the io_service for this state machine instance
    */
-  StateMachine(boost::asio::io_service& ioService, DataModel& dataModel);
+  StateMachine(boost::asio::io_service& ioService, DataModel* dataModel);
   virtual ~StateMachine();
 
   State* getState(const std::string name, bool create = false) override;
@@ -42,10 +43,10 @@ public:
   void announceState(State* newState);
   bool stateExists(const std::string& name);
 
-  /** returns a reference to the data model.
+  /** returns a pointer to the data model.
    * Needed to evaluate conditions for transitions and to execute actions
    */
-  DataModel& getDataModel();
+  DataModel* getDataModel();
   
   /** Starts the state machine and enters the entry state
    * @throws std::logic_error if there is no valid entry state
@@ -60,7 +61,7 @@ protected:
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states
   std::map <std::string, State*> statePointers;
-  DataModel& dataModel;
+  DataModel* dataModel;
 };
 
 

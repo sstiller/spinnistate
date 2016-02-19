@@ -12,11 +12,12 @@ int main(void)
 {
   boost::asio::io_service ioService;
   ssm::ChaiScriptDataModel dataModel;
-  ssm::StateMachine stateMachine(ioService, dataModel);
+  ssm::StateMachine stateMachine(ioService, &dataModel);
 
   // adding (sub)states
   ssm::State* hello1State = stateMachine.getState("Hello1", true);
   ssm::State* hello12State = hello1State->getState("Hello12", true);
+  ssm::State* hello2State = stateMachine.getState("Hello2", true);
   
   // check parents
   if(hello1State != hello12State->getParent())
@@ -70,13 +71,13 @@ int main(void)
 
   // data model
   try{
-    bool result = stateMachine.getDataModel().evaluateBool("1 < 3");
+    bool result = stateMachine.getDataModel()->evaluateBool("1 < 3");
     if(!result)
     {
       std::cerr << "Error: dataModel.evaluateBool(\"1 < 3\") returned false." << std::endl;
       return(1);
     }
-    result = stateMachine.getDataModel().evaluateBool("4 < 3");
+    result = stateMachine.getDataModel()->evaluateBool("4 < 3");
     if(result)
     {
       std::cerr << "Error: dataModel.evaluateBool(\"4 < 3\") returned true." << std::endl;
@@ -85,8 +86,31 @@ int main(void)
   }catch(std::exception& exc)
   {
     std::cout << "Error: Exception caught for ChaiScriptDataModel Bool eval: " << exc.what() << std::endl;
+    return(1);
   }
   std::cout << "OK: ChaiScriptDataModel" << std::endl;
+
+  // transitions
+  ssm::Transition* transition1_2 = hello1State->addTransition("trans 1-2",
+                                                         hello2State,
+                                                         "trigger1",
+                                                         "true");
+  std::cout << __func__  << "() &transition1_2 = " << transition1_2 << std::endl;
+  bool transTrue  = transition1_2->conditionsSatisfied("trigger1");
+  if(!transTrue)
+  {
+    std::cout << "Error: transTrue not true" << std::endl;
+    return(1);
+  }
+  std::cout << "OK: transTrue true" << std::endl;
+    
+  bool transFalse = transition1_2->conditionsSatisfied("");
+  if(transFalse)
+  {
+    std::cout << "Error: transFalse not false" << std::endl;
+    return(1);
+  }
+  std::cout << "OK: transFalse false" << std::endl;
 
   // start machine
   stateMachine.start();

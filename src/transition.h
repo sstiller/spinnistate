@@ -33,20 +33,39 @@ class Transition: public ActionContainer
 {
 public:
   Transition(const std::string& name,
+             StateMachine* stateMachine,
              State* srcState,
              State* dstState,
              const std::string& triggerName,
              const std::string& guard);
+
   ~Transition();
+  /** tests if the conditions of the event are satisfied
+   * If the transition contains no event name, just the guard is checked.
+   * If the event contains an event name, it is compared with the given one and
+   * only is executed if the name matches and the condition (if any) is is
+   * satisfied.
+   * @param eventName the name of the current event (or or empty string)
+   * @returns true if the condition is satisfied */
+  bool conditionsSatisfied(const std::string& activeEventName);
+
+  /** exectues the transition if  conditionsSatisfied returns true.
+   * @param eventName the name of the current event (or empty string)
+   * @returns true if the transition was executed */
+  bool execute(const std::string& activeEventName);
+
+  const std::string& getName() const;
+  StateMachine* getStateMachine() const;
 
 protected:
 
 private:
   std::string name;
+  StateMachine* stateMachine;
   State* srcState;
   State* dstState;
   std::string triggerName;
-  std::string guard;
+  std::string guard; //< an expression evaluated by the data model
 };
 
 } // namespace ssm
