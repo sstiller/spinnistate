@@ -10,14 +10,8 @@
 // boost
 #include <boost/asio.hpp>
 
-namespace ssm // "Spinni state machine"
-{
-  class StateMachine;
-}
-
 // local includes
 #include "data-model.h"
-#include "state.h"
 #include "state-container.h"
 
 namespace ssm // "Spinni state machine"

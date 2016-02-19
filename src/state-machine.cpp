@@ -6,6 +6,7 @@
  */
 
 #include "state-machine.h"
+#include "state.h"
 
 namespace ssm // "Spinni state machine"
 {

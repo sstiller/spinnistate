@@ -11,17 +11,13 @@
 // stl
 #include <string>
 
-namespace ssm // "Spinni state machine"
-{
-  class ActionContainer;
-}
-
-// local includes
+#include "data-model.h"
 #include "state-machine.h"
 
 namespace ssm // "Spinni state machine"
 {
-
+class StateMachine;
+  
 class ActionContainer
 {
 public:

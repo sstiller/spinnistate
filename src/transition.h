@@ -12,11 +12,12 @@
 #include <string>
 
 // local includes
+#include "state-machine-element.h"
 #include "action-container.h"
-#include "state.h"
 
 namespace ssm // "Spinni state machine"
 {
+class State;
 
 /** A transition to change the current state.
  * A transition is "executed" if
@@ -29,11 +30,10 @@ namespace ssm // "Spinni state machine"
  * - the onEntry of this trigger is called
  * - the onEntry function of dstState is executed
  */
-class Transition: public ActionContainer 
+class Transition: public StateMachineElement, public ActionContainer 
 {
 public:
   Transition(const std::string& name,
-             StateMachine* stateMachine,
              State* srcState,
              State* dstState,
              const std::string& triggerName,
@@ -54,14 +54,9 @@ public:
    * @returns true if the transition was executed */
   bool execute(const std::string& activeEventName);
 
-  const std::string& getName() const;
-  StateMachine* getStateMachine() const;
-
 protected:
 
 private:
-  std::string name;
-  StateMachine* stateMachine;
   State* srcState;
   State* dstState;
   std::string triggerName;

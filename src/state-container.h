@@ -12,18 +12,13 @@
 #include <map>
 #include <memory> // shared_ptr
 
-namespace ssm // "Spinni state machine"
-{
-  class StateContainer;
-}
-
 // local includes
-#include "state-machine.h"
-#include "state.h"
 
 
 namespace ssm // "Spinni state machine"
 {
+class StateMachine;
+class State;
 
 class StateContainer
 {
@@ -58,7 +53,7 @@ public:
   State* findState(const std::string& name);
 
 protected:
-  std::map<std::string, State> existingStates;
+  std::map<std::string, std::unique_ptr<State> > existingStates;
   State* entryState;
 
 private:

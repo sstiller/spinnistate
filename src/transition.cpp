@@ -13,24 +13,18 @@ namespace ssm // "Spinni state machine"
 {
 
 Transition::Transition(const std::string& name,
-                       StateMachine* stateMachine,
                        State* srcState,
                        State* dstState,
                        const std::string& triggerName,
                        const std::string& guard)
-: ActionContainer(srcState->getStateMachine()),
-  name(name),
-  stateMachine(stateMachine),
+: StateMachineElement(srcState->getStateMachine(), name),
+  ActionContainer(getStateMachine()),
   srcState(srcState),
   dstState(dstState),
   triggerName(triggerName),
   guard(guard)
 {
   //TODO: check name, trigger, condition (avoid never used transitions)
-  if(!stateMachine)
-  {
-    throw(std::invalid_argument("StateMachine nullptr."));
-  }
   
 }
 
@@ -52,7 +46,7 @@ bool Transition::conditionsSatisfied(const std::string& activeEventName)
   // check guard
   if(guard.size())
   {
-    DataModel* dm = stateMachine->getDataModel();
+    DataModel* dm = getStateMachine()->getDataModel();
     std::cout << __func__ << "(): Evaluate \"" << guard << "\". DataModel = " << dm << std::endl;
     
     bool ret = dm->evaluateBool(guard);
@@ -71,18 +65,6 @@ bool Transition::execute(const std::string& activeEventName)
   //TODO: execute it!
   return(true);
 }
-
-const std::string& Transition::getName() const
-{
-  return(name);
-}
-
-StateMachine* Transition::getStateMachine() const
-{
-  return(stateMachine);
-}
-
-
 
 } // namespace ssm
 

@@ -50,8 +50,8 @@ State* State::getState(const std::string name, bool create)
 
 Transition* State::addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard)
 {
-  transitions.push_back(Transition(name, stateMachine, this, dstState, triggerName, guard));
-  return(&transitions.back());
+  transitions.push_back(std::unique_ptr<Transition>(new Transition(name, this, dstState, triggerName, guard)));
+  return(transitions.back().get());
 }
 
 const std::string& State::getName() const

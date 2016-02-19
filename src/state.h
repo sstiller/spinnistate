@@ -10,20 +10,18 @@
 
 // stl
 #include <string>
-
-namespace ssm // "Spinni state machine"
-{
-  class State;
-}
+#include <memory>
+#include <vector>
 
 // local includes
-#include "state-machine.h"
 #include "state-container.h"
-#include "transition.h"
 #include "action-container.h"
+#include "state-machine.h"
+#include "transition.h"
 
 namespace ssm // "Spinni state machine"
 {
+class Transition;
 
 class State : public StateContainer, public ActionContainer
 {
@@ -52,7 +50,7 @@ private:
   std::string name; ///< name of this state
   StateMachine* stateMachine; ///< needed for actions and evaluations of transition conditions 
   State* parentState; ///< nullptr if no parent state
-  std::vector<Transition> transitions;
+  std::vector<std::unique_ptr<Transition> > transitions;
 };
 
 } // namespace ssm

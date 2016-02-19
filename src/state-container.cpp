@@ -33,21 +33,19 @@ State* StateContainer::addState(const std::string name, State* parentState)
     throw(std::logic_error("State with the given name already exists!"));
   }
 
-//  existingStates.insert(std::pair<std::string, State>(name, State(name, stateMachine, parentState)));
-  State newState(name, stateMachine, parentState);
-  existingStates.insert(std::make_pair(name, newState));
-  stateMachine->announceState(&(existingStates.at(name)));
+  existingStates.insert(std::pair<std::string, std::unique_ptr<State> >(name, std::unique_ptr<State>(new State(name, stateMachine, parentState))));
+  stateMachine->announceState(existingStates.at(name).get());
   if(existingStates.size() == 1)
   {
     // take the first state as antry state
-    entryState = &(existingStates.at(name));
+    entryState = existingStates.at(name).get();
   }
-  return(&existingStates.at(name));
+  return(existingStates.at(name).get());
 }
 
 State* StateContainer::findState(const std::string& name)
 {
-  return(&(existingStates.at(name)));
+  return(existingStates.at(name).get());
 }
 
 } // namespace ssm
