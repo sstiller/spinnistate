@@ -14,6 +14,7 @@
 #include <vector>
 
 // local includes
+#include "state-machine-element.h"
 #include "state-container.h"
 #include "action-container.h"
 #include "state-machine.h"
@@ -23,7 +24,7 @@ namespace ssm // "Spinni state machine"
 {
 class Transition;
 
-class State : public StateContainer, public ActionContainer
+class State : public StateMachineElement, public StateContainer, public ActionContainer
 {
 public:
   State() = delete;
@@ -39,16 +40,12 @@ public:
   virtual State* getState(const std::string name, bool create = false) override;
 
   Transition* addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard);
-  const std::string& getName() const;
   State* getParent();
-  StateMachine* getStateMachine();
 
   void enter();
   void leave();
 
 private:
-  std::string name; ///< name of this state
-  StateMachine* stateMachine; ///< needed for actions and evaluations of transition conditions 
   State* parentState; ///< nullptr if no parent state
   std::vector<std::unique_ptr<Transition> > transitions;
 };
