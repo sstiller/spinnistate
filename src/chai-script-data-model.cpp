@@ -26,7 +26,7 @@ ChaiScriptDataModel::~ChaiScriptDataModel()
 
 bool ChaiScriptDataModel::evaluateBool(const std::string& expression)
 {
-  std::cout << __PRETTY_FUNCTION__ << " called (" << expression << ")" << std::endl;
+  //std::cout << __PRETTY_FUNCTION__ << " called (" << expression << ")" << std::endl;
   //TODO: catch exception and throw StateMachineException
   return(chai.eval<bool>(expression));
   

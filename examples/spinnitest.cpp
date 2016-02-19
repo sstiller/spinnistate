@@ -90,12 +90,14 @@ int main(void)
   }
   std::cout << "OK: ChaiScriptDataModel" << std::endl;
 
+  // start machine
+  stateMachine.start(); // go to initial (sub)state
+
   // transitions
   ssm::Transition* transition1_2 = hello1State->addTransition("trans 1-2",
                                                          hello2State,
                                                          "trigger1",
                                                          "true");
-  std::cout << __func__  << "() &transition1_2 = " << transition1_2 << std::endl;
   bool transTrue  = transition1_2->conditionsSatisfied("trigger1");
   if(!transTrue)
   {
@@ -105,16 +107,19 @@ int main(void)
   std::cout << "OK: transTrue true" << std::endl;
     
   bool transFalse = transition1_2->conditionsSatisfied("");
-  if(transFalse)
+  if(transFalse != false)
   {
     std::cout << "Error: transFalse not false" << std::endl;
     return(1);
   }
   std::cout << "OK: transFalse false" << std::endl;
+  if(! transition1_2->execute("trigger1"))
+  {
+    std::cout << "Error: Transition " << transition1_2->getName() << " was not executed!" << std::endl;
+    return(1);
+  }
+  std::cout << "OK: Transition " << transition1_2->getName() << " executed" << std::endl;
 
-  // start machine
-  stateMachine.start();
-  
 //  ioService.run();
   
   return(0);

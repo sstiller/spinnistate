@@ -47,10 +47,7 @@ bool Transition::conditionsSatisfied(const std::string& activeEventName)
   if(guard.size())
   {
     DataModel* dm = getStateMachine()->getDataModel();
-    std::cout << __func__ << "(): Evaluate \"" << guard << "\". DataModel = " << dm << std::endl;
-    
-    bool ret = dm->evaluateBool(guard);
-    return(ret);
+    return(dm->evaluateBool(guard));
   }
   // no conditions --> execute always
  return(true);
@@ -62,6 +59,7 @@ bool Transition::execute(const std::string& activeEventName)
   {
     return(false);
   }
+  std::cout << __PRETTY_FUNCTION__ << " Would now change to state " << dstState->getName() << std::endl;
   //TODO: execute it!
   return(true);
 }
