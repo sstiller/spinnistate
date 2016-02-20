@@ -19,5 +19,9 @@ DataModel::~DataModel()
   // TODO: Add implementation here
 }
 
+void DataModel::init()
+{
+}
+
 } // namespace ssm
 

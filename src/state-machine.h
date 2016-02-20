@@ -42,10 +42,22 @@ public:
    */
   DataModel* getDataModel();
   
-  /** Starts the state machine and enters the entry state
-   * @throws std::logic_error if there is no valid entry state
+  /** Initializes the state machine and sets the init script for the data model.
+   * The init script is executed after start() is called.
+   * @param dataModelInitScript the initScript for the data model (called later after start of the SM!)
+   * |throws std::logic_error if already initialized
+   */
+  void init(const std::string& dataModelInitScript);
+
+  /* returns true if the SM is initialized (by init()).
+   */
+  bool isInitialized(); 
+
+  /** Starts the state machine and enters the entry state.
+   * @throws std::logic_error if there is no valid entry state or the SM is not initialized
    */
   void start();
+
 protected:
   /// the io_service for this state machine instance
   boost::asio::io_service& ioService;
@@ -56,6 +68,8 @@ private:
   /// needed to check if a state name already exists in a state machine and for faster access to states
   std::map <std::string, State*> statePointers;
   DataModel* dataModel;
+  bool stateMachineInitialized;
+  std::string dataModelInitScript;
 };
 
 

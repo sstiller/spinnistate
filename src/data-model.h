@@ -22,6 +22,8 @@ public:
   // to be implemented by inheriting classes
   virtual bool evaluateBool(const std::string& expression) = 0; //TODO: replace by template function for return value?
   virtual void executeAction(const std::string& actionString) = 0; // TODO: throw StateMachine::exception on error and catch it
+  /** Init the DataModel */
+  virtual void init(); // TODO: throw StateMachine::exception on error and catch it
 
 /*TODO:
  * Virtual class for implementation

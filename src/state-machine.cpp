@@ -15,7 +15,8 @@ StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel* dataMo
 : StateContainer(this),
   ioService(ioService),
   currentState(nullptr),
-  dataModel(dataModel)
+  dataModel(dataModel),
+  stateMachineInitialized(false)
 {
   if(!dataModel)
   {
@@ -63,8 +64,31 @@ DataModel* StateMachine::getDataModel()
   return(dataModel);
 }
 
+void StateMachine::init(const std::string& dataModelInitScript)
+{
+  if(isInitialized())
+  {
+    throw(std::logic_error("StateMachine already initialized."));
+  }
+  this->dataModelInitScript = dataModelInitScript;
+  stateMachineInitialized = true;
+}
+
+bool StateMachine::isInitialized()
+{
+  return(stateMachineInitialized);
+}
+
 void StateMachine::start()
 {
+  if(!isInitialized())
+  {
+    throw(std::logic_error("Can not start StateMachine (not initialized)."));
+  }  
+  if(dataModelInitScript.size())
+  {
+    dataModel->executeAction(dataModelInitScript);
+  }
   if(entryState)
   {
     entryState->enter();

@@ -90,6 +90,8 @@ int main(void)
   }
   std::cout << "OK: ChaiScriptDataModel" << std::endl;
 
+  // init state machine
+  stateMachine.init("");
   // start machine
   stateMachine.start(); // go to initial (sub)state
 
