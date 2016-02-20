@@ -39,7 +39,7 @@ Please.
 
 
 What I plan to do and maybe never finish (lack of time):
-* Creating an open-source interpreter for runtime-loadable hierarchical parallel virtual Moore finite-state machines
+* Creating an open-source interpreter for runtime-loadable hierarchical parallel virtual Moore/Mealy finite-state machines
 * License LGPLv3+
 * support for importing SCXML and maybe some other formats provided by some free fsm modeling tools
 * support for different data models
