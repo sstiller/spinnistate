@@ -92,6 +92,7 @@ int main(void)
 
   // init state machine
   stateMachine.init("");
+  
   // start machine
   stateMachine.start(); // go to initial (sub)state
 

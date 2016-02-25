@@ -40,6 +40,12 @@ public:
   virtual State* getState(const std::string name, bool create = false) override;
 
   Transition* addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard);
+
+  /** Look if a transition of this state is executible
+   * @param event the currently active event (may be empty string)
+   * @return pointer to the first transition with matching conditions or nullptr if none found
+   */
+  Transition* findExecutibleTransition(const std::string& event);
   State* getParent();
 
   void enter();

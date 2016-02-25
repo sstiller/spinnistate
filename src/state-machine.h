@@ -13,10 +13,12 @@
 // local includes
 #include "data-model.h"
 #include "state-container.h"
+//#include "transition.h"
 
 namespace ssm // "Spinni state machine"
 {
-
+class Transition;
+  
 class StateMachine : public StateContainer
 {
 public:
@@ -58,11 +60,36 @@ public:
    */
   void start();
 
+  /** An event occured.
+   * Here the matching transitions / actions are processed.
+   * @todo rename to executeMacrostep?
+   * @param eventName the occured event.
+   */
+  void processEvent(const std::string& eventName);
+
+  /** Check if the state machine has finished
+   * @return true if final state(s) reached 
+   * @todo implement!
+   */
+  bool finalReached();
+
+  /** get the currently active state
+   * @return the active state of nullptr if not initialized
+   */
+  State* getActiveState();
 protected:
+
+  /** start with the current cative state and look for an executible transition
+   * @param event the currently active event
+   * @return pointer to the selected transition or nullptr if none found
+   * @throws std::logic_error if no active state 
+   */
+  Transition* findExecutibleTransition(const std::string& event = std::string());
+  
   /// the io_service for this state machine instance
   boost::asio::io_service& ioService;
 
-  State* currentState; // nullptr if not started
+  State* activeState; // nullptr if not started TODO: make a vector if parallel states
 
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states

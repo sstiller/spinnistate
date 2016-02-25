@@ -49,6 +49,18 @@ Transition* State::addTransition(const std::string& name, State* dstState, const
   return(transitions.back().get());
 }
 
+Transition* State::findExecutibleTransition(const std::string& event)
+{
+  for(auto& currentTransition : transitions)
+  {
+    if(currentTransition->conditionsSatisfied(event))
+    {
+      return(currentTransition.get());
+    }
+  }
+  return(nullptr);
+}
+
 State* State::getParent()
 {
   return(parentState);
