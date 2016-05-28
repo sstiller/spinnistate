@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-  */
 /*
- * lib.h
+ * libspinnistate.h
  * Copyright (C) 2016 Sandro Stiller <sandro.stiller@gmx.de>
  * 
  * libspinnistate is free software: you can redistribute it and/or modify it

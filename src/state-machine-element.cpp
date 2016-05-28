@@ -13,13 +13,15 @@ namespace ssm // "Spinni state machine"
 
 StateMachineElement::StateMachineElement(StateMachine* stateMachine, const std::string& name)
 : stateMachine(stateMachine),
-  name(name)
+  name(name),
+  elementNumber(currentElementCount)
 {
   // TODO: name may be empty here?
   if(!stateMachine)
   {
     throw(std::invalid_argument("StateMachine nullptr."));
   }
+  currentElementCount++;
 }
 
 StateMachine* StateMachineElement::getStateMachine()
@@ -30,6 +32,11 @@ StateMachine* StateMachineElement::getStateMachine()
 const std::string& StateMachineElement::getName() const
 {
   return(name);
+}
+
+unsigned int StateMachineElement::getElementNumber() const
+{
+  return(elementNumber);
 }
 
 

@@ -33,14 +33,19 @@ State* StateContainer::addState(const std::string name, State* parentState)
     throw(std::logic_error("State with the given name already exists!"));
   }
 
-  existingStates.insert(std::pair<std::string, std::unique_ptr<State> >(name, std::unique_ptr<State>(new State(name, stateMachine, parentState))));
+  State* newState = new State(name, stateMachine, parentState);
+  existingStates.insert(std::pair<std::string, std::unique_ptr<State> >(name, std::unique_ptr<State>(newState)));
   stateMachine->announceState(existingStates.at(name).get());
   if(existingStates.size() == 1)
   {
     // take the first state as antry state
-    entryState = existingStates.at(name).get();
+    entryState = newState;
   }
-  return(existingStates.at(name).get());
+  if(newState->isEntry())
+  {
+    entryState = newState;
+  }
+  return(newState);
 }
 
 State* StateContainer::findState(const std::string& name)

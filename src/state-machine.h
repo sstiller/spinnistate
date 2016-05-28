@@ -6,6 +6,8 @@
 
 #ifndef _STATE_MACHINE_H_
 #define _STATE_MACHINE_H_
+// stl
+#include <set>
 
 // boost
 #include <boost/asio.hpp>
@@ -13,15 +15,19 @@
 // local includes
 #include "data-model.h"
 #include "state-container.h"
+#include "state-machine-element.h"
 //#include "transition.h"
 
 namespace ssm // "Spinni state machine"
 {
 class Transition;
+
+typedef std::set<Transition*, StateMachineElement::PointerDocOrderCompare> TransitionSet;
   
 class StateMachine : public StateContainer
 {
 public:
+  typedef std::vector<State*> StatePtrVector;
   StateMachine() = delete;
   StateMachine(const StateMachine&) = delete;
   /** Constructor.
@@ -71,25 +77,29 @@ public:
    * @return true if final state(s) reached 
    * @todo implement!
    */
-  bool finalReached();
+  bool finalReached() const;
 
-  /** get the currently active state
-   * @return the active state of nullptr if not initialized
-   */
-  State* getActiveState();
 protected:
 
   /** start with the current cative state and look for an executible transition
-   * @param event the currently active event
-   * @return pointer to the selected transition or nullptr if none found
+   * @param event the currently active event empty if searching for eventless transitions
+   * @return pointers to the selected transitions or empty set if none found
    * @throws std::logic_error if no active state 
    */
-  Transition* findExecutibleTransition(const std::string& event = std::string());
+  TransitionSet selectTransitions(const std::string& event = std::string());
+
+  /** remove transitions which can not be executed in parall.
+   * Applies only for parallel states
+   */
+  TransitionSet removeConflictingTransitions(const TransitionSet& transitions);
   
   /// the io_service for this state machine instance
   boost::asio::io_service& ioService;
 
-  State* activeState; // nullptr if not started TODO: make a vector if parallel states
+  /** Contains all active atomic states.
+   * This simple vector implements the SCXML machine configuration. 
+   */
+  StatePtrVector activeStates;
 
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states

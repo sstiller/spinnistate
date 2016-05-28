@@ -48,10 +48,6 @@ public:
        --> Maybe using vp8? (used in uscxml)
        --> V8 memory usage min 12MB http://stackoverflow.com/questions/11438833/v8-memory-usage
  */ 
-  
-protected:
-
-private:
 
 };
 

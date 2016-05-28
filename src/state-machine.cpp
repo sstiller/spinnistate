@@ -14,7 +14,6 @@ namespace ssm // "Spinni state machine"
 StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel* dataModel)
 : StateContainer(this),
   ioService(ioService),
-  activeState(nullptr),
   dataModel(dataModel),
   stateMachineInitialized(false)
 {
@@ -107,9 +106,8 @@ void StateMachine::processEvent(const std::string& eventName)
     while(! macrostepDone)
     {
       // check for eventless transitions
-      // TODO: later here we select more transitions (for parallel states)
-      Transition* activeTransition = findExecutibleTransition();
-      if(! activeTransition)
+      TransitionSet enabledTransitions = selectTransitions();
+      if(enabledTransitions.empty())
       {
         std::cout << __func__ << "() Would check internal events" << std::endl;
         macrostepDone = true; //TODO: Only if internal queue is empty!
@@ -127,36 +125,75 @@ break;
   std::cout << __func__ << "() finished." << std::endl;
 }
 
-bool StateMachine::finalReached()
+bool StateMachine::finalReached() const
 {
   std::cout << __PRETTY_FUNCTION__ << " Implement me!" << std::endl;
   return(false);
 }
 
-State* StateMachine::getActiveState()
-{
-  return(activeState);
-}
-
 // protected/private
 
-Transition* StateMachine::findExecutibleTransition(const std::string& event)
+TransitionSet StateMachine::selectTransitions(const std::string& event)
 {
-  State* currentState = getActiveState();
-  if(! currentState)
+  TransitionSet retSet;
+  if(activeStates.empty())
   {
-    throw(std::logic_error("Can not find transition, current state == nullptr."));
+    throw(std::logic_error("Can not find transitions, current state == nullptr."));
   }
-  do
+  for(State* currentState : activeStates)
   {
-    Transition* retTransition = currentState->findExecutibleTransition(event);
-    if(retTransition)
+    do
     {
-      return(retTransition);
+      Transition* retTransition = currentState->findExecutibleTransition(event);
+      if(retTransition)
+      {
+        retSet.insert(retTransition); // double entries will not happen because of std::set
+        break; // continue for loop
+      }
+      currentState = currentState->getParent(); // if no parent state --> top level state
+    }while(currentState);
+  }
+  if(retSet.size() > 1)
+  {
+    removeConflictingTransitions(retSet);
+  }
+  return(retSet);
+}
+
+TransitionSet StateMachine::removeConflictingTransitions(const TransitionSet& transitions)
+{
+  std::set<Transition*, StateMachineElement::PointerDocOrderCompare> filteredTransitions;
+  std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
+  for(auto t1 : transitions)
+  {
+    bool t1Preemted(false);
+    std::set<Transition*> transitionsToRemove;
+    auto t1ExitSet = t1->computeExitSet();
+    for(auto t2 : filteredTransitions)
+    {
+      auto t2ExitSet = t2->computeExitSet();
+      if(t1ExitSet.hasIntersection(t2ExitSet))
+      {
+        if(t2->getSrcState()->isAncestorOf(t1->getSrcState()))
+        {
+          transitionsToRemove.insert(t2);
+        }else
+        {
+          t1Preemted = true;
+          break;
+        }
+      }
     }
-    currentState = currentState->getParent(); // if no parent state --> top level state
-  }while(currentState);
-  return(nullptr);
+    if(! t1Preemted)
+    {
+      for(auto t3 : transitionsToRemove)
+      {
+        filteredTransitions.erase(t3);
+      }
+      filteredTransitions.insert(t1);
+    }
+  }
+  return(filteredTransitions);
 }
 
 } // namespace ssm 

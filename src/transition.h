@@ -14,6 +14,7 @@
 // local includes
 #include "state-machine-element.h"
 #include "action-container.h"
+#include "ordered-set.h"
 
 namespace ssm // "Spinni state machine"
 {
@@ -54,6 +55,11 @@ public:
    * @returns true if the transition was executed */
   bool execute(const std::string& activeEventName);
 
+  State* getSrcState() const;
+  State* getDstState() const; 
+  
+  OrderedSet<State*> computeExitSet() const;
+  State* getTransitionDomain() const;
 protected:
 
 private:

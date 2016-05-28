@@ -64,6 +64,49 @@ bool Transition::execute(const std::string& activeEventName)
   return(true);
 }
 
+State* Transition::getSrcState() const
+{
+  return(srcState);
+}
+
+State* Transition::getDstState() const
+{
+  return(dstState);
+}
+
+OrderedSet<State*> Transition::computeExitSet() const
+{
+  OrderedSet<State*> statesToExit;
+  if(dstState)
+  {
+    auto domain = getTransitionDomain();
+    for(s in configuration)
+    {
+      if(isDescendant(s,domain))
+      {
+        statesToExit.add(s)
+      }
+    }
+  }
+  return(statesToExit);   
+}
+
+State* Transition::getTransitionDomain() const
+{
+  tstates = getEffectiveTargetStates(t)
+  if(! tstates)
+  {
+    return(nullptr);
+  }else if((this->type == "internal") &&
+           (srcState->isCompoundState()) &&
+           (tstates.every(lambda s: isDescendant(s,srcState))))
+  {
+    return(srcState);
+  }
+  // else
+  return findLCCA([srcState].append(tstates))
+}
+
 } // namespace ssm
 
 

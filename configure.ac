@@ -1,5 +1,4 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl Created by Anjuta application wizard.
 
 AC_INIT(libspinnistate, 0.1)
 
@@ -16,16 +15,9 @@ AC_PROG_CPP
 AC_PROG_CXX
 
 
-
-
-
-
 AC_DISABLE_STATIC
 
 LT_INIT
-
-
-
 
 
 PKG_CHECK_MODULES(CHAISCRIPT,chaiscript)

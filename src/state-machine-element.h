@@ -18,12 +18,20 @@ class StateMachine;
 class StateMachineElement
 {
 public:
+  struct PointerDocOrderCompare
+  {
+    bool operator()(const StateMachineElement* a, const StateMachineElement* b) const  { return(a->getElementNumber() < b->getElementNumber()); }
+  };
+  
   StateMachineElement(StateMachine* stateMachine, const std::string& name);
   StateMachine* getStateMachine();
   const std::string& getName() const;
+  unsigned int getElementNumber() const;
 private:
   StateMachine* stateMachine;
   std::string name;
+  static unsigned int currentElementCount; ///< increased with every new created element
+  unsigned int elementNumber; ///< the set to currentElementCount before increased (1st element = number 0)
 };
 
 } // namespace ssm

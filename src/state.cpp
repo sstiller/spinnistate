@@ -9,11 +9,13 @@
 namespace ssm // "Spinni state machine"
 {
 
-State::State(const std::string& name, StateMachine* stateMachine, State* parent)
+State::State(const std::string& name, StateMachine* stateMachine, State* parent, bool isEntryState, bool parallel)
 : StateMachineElement(stateMachine, name),
   StateContainer(stateMachine),
   ActionContainer(stateMachine),
-  parentState(parent)
+  parentState(parent),
+  isEntryState(isEntryState),
+  parallel(parallel)
 {
   if(getName().size() == 0)
   {
@@ -61,15 +63,40 @@ Transition* State::findExecutibleTransition(const std::string& event)
   return(nullptr);
 }
 
-State* State::getParent()
+State* State::getParent() const
 {
   return(parentState);
+}
+
+bool State::isAncestorOf(const State* other) const
+{
+  if(!other)
+  {
+    return(false);
+  }
+  for(State* currentState = other->getParent(); currentState != nullptr; currentState = currentState->getParent())
+  {
+    if(currentState == this)
+    {
+      return(true);
+    }
+  }
+  return(false);
+}
+
+bool State::isParallel() const
+{
+  return(parallel);
 }
 
 void State::enter()
 {
   executeOnEntry();
-  if(entryState)
+  if(isParallel())
+  {
+    std::cout << "State " << getName() << " TODO: Enter substates (because parallel)." << std::endl;
+    //TODO: enter all the states
+  }else if(entryState)
   {
     std::cout << "State " << getName() << " is entering substate." << std::endl;
     entryState->enter();

@@ -34,7 +34,7 @@ public:
    * @param stateMachine the state machine the state belongs to
    * @throws std::invalid_argument if name or stateMachine not valid or a state with the same name already exists 
    */
-  State(const std::string& name, StateMachine* stateMachine, State* parent = nullptr);
+  State(const std::string& name, StateMachine* stateMachine, State* parent = nullptr, bool isEntryState = false, bool parallel = false);
   virtual ~State();
 
   virtual State* getState(const std::string name, bool create = false) override;
@@ -46,14 +46,27 @@ public:
    * @return pointer to the first transition with matching conditions or nullptr if none found
    */
   Transition* findExecutibleTransition(const std::string& event);
-  State* getParent();
+  State* getParent() const;
 
+  /** returns true if the state is a real ancestor of the other state.
+   * Returns fals if not ancestor or this == other
+   */
+  bool isAncestorOf(const State* other) const;
+  
+  /** returns true if the state is a parallel state. */
+  bool isParallel() const;
+
+  /** returns true if the state is an entry state. */
+  bool isEntry() const;
+  
   void enter();
   void leave();
 
 private:
   State* parentState; ///< nullptr if no parent state
   std::vector<std::unique_ptr<Transition> > transitions;
+  bool isEntryState;
+  bool parallel;
 };
 
 } // namespace ssm

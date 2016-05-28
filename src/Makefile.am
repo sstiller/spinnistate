@@ -31,6 +31,8 @@ libspinnistate_la_LIBADD =  \
 
 include_HEADERS = \
 	libspinnistate.h \
+	list.h \
+	ordered-set.h \
 	state-machine.h \
 	state.h \
 	state-container.h \
@@ -38,7 +40,7 @@ include_HEADERS = \
 	data-model.h \
 	chai-script-data-model.h \
 	transition.h \
-	state-machine-element.h 
+	state-machine-element.h
 
 
 pkgconfigdir = $(libdir)/pkgconfig
