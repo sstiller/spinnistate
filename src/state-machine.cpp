@@ -131,16 +131,21 @@ bool StateMachine::finalReached() const
   return(false);
 }
 
+const OrderedSet<State*>& StateMachine::getConfiguration() const
+{
+  return(configuration);
+}
+
 // protected/private
 
 TransitionSet StateMachine::selectTransitions(const std::string& event)
 {
   TransitionSet retSet;
-  if(activeStates.empty())
+  if(configuration.empty())
   {
     throw(std::logic_error("Can not find transitions, current state == nullptr."));
   }
-  for(State* currentState : activeStates)
+  for(State* currentState : configuration)
   {
     do
     {

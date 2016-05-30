@@ -19,7 +19,7 @@
 namespace ssm {
 
 template <typename T>
-class OrderedSet
+class OrderedSet: public std::list<T>
 {
 public:
   // Adds e to the set if it is not already a member
@@ -27,17 +27,17 @@ public:
   {
     if(! isMember(e))
     {
-      data.push_back(e);
+      this->push_back(e);
     }
   }
 
   // Deletes e from the set
   void deleteElement(const T& e)
   {
-    auto pos = std::find(data.begin(), data.end(), e);
-    if(pos != data.end())
+    auto pos = std::find(std::list<T>::begin(), std::list<T>::end(), e);
+    if(pos != std::list<T>::end())
     {
-      data.erase(pos);
+      erase(pos);
     }
   }
 
@@ -48,7 +48,7 @@ public:
   {
     for(auto currentElement : s)
     {
-      data.insert(currentElement);
+      insert(currentElement);
     }
   };
 
@@ -56,7 +56,7 @@ public:
    */
   bool isMember(const T& e) const
   {
-    return(std::find(data.begin(), data.end(), e) != data.end());
+    return(std::find(std::list<T>::begin(), std::list<T>::end(), e) != std::list<T>::end());
   };
 
   /** Returns true if some element in the set satisfies the predicate f.
@@ -64,7 +64,7 @@ public:
    */
   bool some(std::function<bool (const T&)> f)
   {
-    for(auto currentElement : data)
+    for(auto currentElement : *this)
     {
 	    if(f(currentElement))
 	    {
@@ -79,7 +79,7 @@ public:
    */
   bool every(std::function<bool (const T&)> f)
   {
-    for(auto currentEntry : data)
+    for(auto currentEntry : *this)
     {
 	    if(! f(currentEntry))
 	    {
@@ -93,7 +93,7 @@ public:
 	 */
 	bool hasIntersection(const OrderedSet<T>& s) const
   {
-    for(auto currentElement : data)
+    for(auto currentElement : *this)
     {
       if(s.isMember(currentElement))
       {
@@ -101,18 +101,6 @@ public:
       }
     }
     return(false);
-  }
-
-    // Is the set empty?
-	bool isEmpty() const
-  {
-    return(data.empty());
-  }
-
-    // Remove all elements from the set (make it empty)
-	void clear()
-  {
-    data.clear();
   }
 
 	/** Converts the set to a list that reflects the order in which elements were originally added
@@ -123,15 +111,15 @@ public:
 	List<T> toList() const
   {
     List<T> retList;
-    for(auto currentEntry : data)
+    for(auto currentEntry : *this)
     {
       retList.append(currentEntry);
     }
     return(retList);
   }
-
-private:
-	std::list<T> data;
+ 
+//private:
+//	std::list<T> data;
 };
 
 } /* namespace ssm */

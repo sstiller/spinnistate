@@ -13,6 +13,7 @@
 #include <boost/asio.hpp>
 
 // local includes
+#include "ordered-set.h"
 #include "data-model.h"
 #include "state-container.h"
 #include "state-machine-element.h"
@@ -27,7 +28,6 @@ typedef std::set<Transition*, StateMachineElement::PointerDocOrderCompare> Trans
 class StateMachine : public StateContainer
 {
 public:
-  typedef std::vector<State*> StatePtrVector;
   StateMachine() = delete;
   StateMachine(const StateMachine&) = delete;
   /** Constructor.
@@ -79,6 +79,8 @@ public:
    */
   bool finalReached() const;
 
+  const OrderedSet<State*>& getConfiguration() const;
+
 protected:
 
   /** start with the current cative state and look for an executible transition
@@ -99,7 +101,7 @@ protected:
   /** Contains all active atomic states.
    * This simple vector implements the SCXML machine configuration. 
    */
-  StatePtrVector activeStates;
+  OrderedSet<State*> configuration;
 
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states

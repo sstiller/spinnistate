@@ -14,13 +14,11 @@ namespace ssm // "Spinni state machine"
 
 Transition::Transition(const std::string& name,
                        State* srcState,
-                       State* dstState,
                        const std::string& triggerName,
                        const std::string& guard)
 : StateMachineElement(srcState->getStateMachine(), name),
   ActionContainer(getStateMachine()),
   srcState(srcState),
-  dstState(dstState),
   triggerName(triggerName),
   guard(guard)
 {
@@ -59,7 +57,7 @@ bool Transition::execute(const std::string& activeEventName)
   {
     return(false);
   }
-  std::cout << __PRETTY_FUNCTION__ << " Would now change to state " << dstState->getName() << std::endl;
+  //std::cout << __PRETTY_FUNCTION__ << " Would now change to states " << dstState->getName() << std::endl;
   //TODO: execute it!
   return(true);
 }
@@ -69,22 +67,33 @@ State* Transition::getSrcState() const
   return(srcState);
 }
 
-State* Transition::getDstState() const
+std::vector<State*> Transition::getTarget() const
 {
-  return(dstState);
+  return(target);
 }
+
+void Transition::addTarget(State* targetState)
+{
+  target.push_back(targetState);
+}
+
+bool Transition::isTargetless() const
+{
+  return(target.empty());
+}
+
 
 OrderedSet<State*> Transition::computeExitSet() const
 {
   OrderedSet<State*> statesToExit;
-  if(dstState)
+  if(!isTargetless())
   {
     auto domain = getTransitionDomain();
-    for(s in configuration)
+    for(auto s : getStateMachine()->getConfiguration())
     {
-      if(isDescendant(s,domain))
+      if(domain->isAncestorOf(s))
       {
-        statesToExit.add(s)
+        statesToExit.addElement(s);
       }
     }
   }
@@ -93,8 +102,8 @@ OrderedSet<State*> Transition::computeExitSet() const
 
 State* Transition::getTransitionDomain() const
 {
-  tstates = getEffectiveTargetStates(t)
-  if(! tstates)
+  auto tStates = getEffectiveTargetStates();
+  if(tStates.empty())
   {
     return(nullptr);
   }else if((this->type == "internal") &&
@@ -104,8 +113,31 @@ State* Transition::getTransitionDomain() const
     return(srcState);
   }
   // else
-  return findLCCA([srcState].append(tstates))
+  return findLCCA([srcState].append(tstates));
 }
+
+OrderedSet<State*> getEffectiveTargetStates() const
+{
+  OrderedSet<State*> targets;
+  for(auto s : target)
+  {
+    if(s->isHistoryState())
+    {
+      if(historyValue[s.id])
+      {
+        targets.union(historyValue[s.id])
+      }else
+      {
+        targets.union(getEffectiveTargetStates(s.transition))
+      }
+    }else
+    {
+      targets.addElement(s);
+    }
+  }
+  return(targets);
+}
+
 
 } // namespace ssm
 

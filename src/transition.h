@@ -36,7 +36,6 @@ class Transition: public StateMachineElement, public ActionContainer
 public:
   Transition(const std::string& name,
              State* srcState,
-             State* dstState,
              const std::string& triggerName,
              const std::string& guard);
 
@@ -56,15 +55,18 @@ public:
   bool execute(const std::string& activeEventName);
 
   State* getSrcState() const;
-  State* getDstState() const; 
+  std::vector<State*> getTarget() const;
+  void addTarget(State* targetState);
+  bool isTargetless() const;
   
   OrderedSet<State*> computeExitSet() const;
   State* getTransitionDomain() const;
+  OrderedSet<State*> getEffectiveTargetStates() const;
 protected:
 
 private:
   State* srcState;
-  State* dstState;
+  std::vector<State*> target;
   std::string triggerName;
   std::string guard; //< an expression evaluated by the data model
 };

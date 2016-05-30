@@ -25,6 +25,7 @@ public:
   
   StateMachineElement(StateMachine* stateMachine, const std::string& name);
   StateMachine* getStateMachine();
+  const StateMachine* getStateMachine() const;
   const std::string& getName() const;
   unsigned int getElementNumber() const;
 private:

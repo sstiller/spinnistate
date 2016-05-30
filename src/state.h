@@ -34,12 +34,12 @@ public:
    * @param stateMachine the state machine the state belongs to
    * @throws std::invalid_argument if name or stateMachine not valid or a state with the same name already exists 
    */
-  State(const std::string& name, StateMachine* stateMachine, State* parent = nullptr, bool isEntryState = false, bool parallel = false);
+  State(const std::string& name, StateMachine* stateMachine, State* parent = nullptr, bool isEntryState = false, bool parallel = false, bool history = false);
   virtual ~State();
 
   virtual State* getState(const std::string name, bool create = false) override;
 
-  Transition* addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard);
+  Transition* addTransition(const std::string& name, const std::string& triggerName, const std::string& guard);
 
   /** Look if a transition of this state is executible
    * @param event the currently active event (may be empty string)
@@ -58,6 +58,8 @@ public:
 
   /** returns true if the state is an entry state. */
   bool isEntry() const;
+
+  bool isHistoryState() const;
   
   void enter();
   void leave();
@@ -67,6 +69,7 @@ private:
   std::vector<std::unique_ptr<Transition> > transitions;
   bool isEntryState;
   bool parallel;
+  bool isHistory;
 };
 
 } // namespace ssm

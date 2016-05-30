@@ -29,6 +29,11 @@ StateMachine* StateMachineElement::getStateMachine()
   return(stateMachine);
 }
 
+const StateMachine* StateMachineElement::getStateMachine() const
+{
+  return(stateMachine);
+}
+
 const std::string& StateMachineElement::getName() const
 {
   return(name);

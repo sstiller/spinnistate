@@ -9,13 +9,14 @@
 namespace ssm // "Spinni state machine"
 {
 
-State::State(const std::string& name, StateMachine* stateMachine, State* parent, bool isEntryState, bool parallel)
+State::State(const std::string& name, StateMachine* stateMachine, State* parent, bool isEntryState, bool parallel, bool history)
 : StateMachineElement(stateMachine, name),
   StateContainer(stateMachine),
   ActionContainer(stateMachine),
   parentState(parent),
   isEntryState(isEntryState),
-  parallel(parallel)
+  parallel(parallel),
+  isHistory(history)
 {
   if(getName().size() == 0)
   {
@@ -45,9 +46,9 @@ State* State::getState(const std::string name, bool create)
   return(addState(name, this));
 }
 
-Transition* State::addTransition(const std::string& name, State* dstState, const std::string& triggerName, const std::string& guard)
+Transition* State::addTransition(const std::string& name, const std::string& triggerName, const std::string& guard)
 {
-  transitions.push_back(std::unique_ptr<Transition>(new Transition(name, this, dstState, triggerName, guard)));
+  transitions.push_back(std::unique_ptr<Transition>(new Transition(name, this, triggerName, guard)));
   return(transitions.back().get());
 }
 
@@ -87,6 +88,16 @@ bool State::isAncestorOf(const State* other) const
 bool State::isParallel() const
 {
   return(parallel);
+}
+
+bool State::isEntry() const
+{
+  return(isEntryState);
+}
+
+bool State::isHistoryState() const
+{
+  return(isHistory);
 }
 
 void State::enter()
