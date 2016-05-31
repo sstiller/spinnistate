@@ -5,7 +5,8 @@
  *
  */
 
-
+#include <functional>   // std::bind
+// local includes
 #include "state.h"
 #include "transition.h"
 
@@ -106,15 +107,18 @@ State* Transition::getTransitionDomain() const
     return(nullptr);
   }else if((isInternal()) &&
            (srcState->isCompoundState()) &&
-           (tstates.every(lambda s: isDescendant(s,srcState))))
+           (tStates.every(std::bind(&State::isAncestorOf, srcState, std::placeholders::_1)))
+           //(tstates.every(lambda s: isDescendant(s,srcState)))
+          )
   {
     return(srcState);
   }
   // else
-  return findLCCA([srcState].append(tstates));
+  //TODO: add findLCCA to... State as static?
+  return findLCCA(tStates.toList().append(srcState));
 }
 
-OrderedSet<State*> getEffectiveTargetStates() const
+OrderedSet<State*> Transition::getEffectiveTargetStates() const
 {
   OrderedSet<State*> targets;
   for(auto s : target)

@@ -32,9 +32,24 @@ public:
 	}
 
 	///< Returns the list appended with l
-	void append(const T& l)
+	List<T> append(const T& l)
 	{
-		data.push_back(l);
+    List<T> retList;
+    retList.data = data;
+    retList.data.push_back(l);
+    return(retList);
+	};
+
+	///< Returns the list appended with l
+  List<T> append(const List<T>& l)
+	{
+    List<T> retList;
+    retList.data = data;
+    for(auto currentElement : l.data)
+    {
+      retList.data.push_back(currentElement);
+    }
+    return(retList);
 	};
 
 	/// Returns the list of elements that satisfy the predicate f
