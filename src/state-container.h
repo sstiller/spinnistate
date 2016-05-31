@@ -52,6 +52,8 @@ public:
    */
   State* findState(const std::string& name);
 
+  bool containsStates() const;
+
 protected:
   std::map<std::string, std::unique_ptr<State> > existingStates;
   State* entryState;

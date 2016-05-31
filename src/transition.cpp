@@ -15,19 +15,17 @@ namespace ssm // "Spinni state machine"
 Transition::Transition(const std::string& name,
                        State* srcState,
                        const std::string& triggerName,
-                       const std::string& guard)
+                       const std::string& guard,
+                       Transition::TransitionType transitionType)
 : StateMachineElement(srcState->getStateMachine(), name),
   ActionContainer(getStateMachine()),
   srcState(srcState),
   triggerName(triggerName),
-  guard(guard)
+  guard(guard),
+  transitionType(transitionType)
 {
   //TODO: check name, trigger, condition (avoid never used transitions)
   
-}
-
-Transition::~Transition()
-{
 }
 
 bool Transition::conditionsSatisfied(const std::string& activeEventName)
@@ -106,7 +104,7 @@ State* Transition::getTransitionDomain() const
   if(tStates.empty())
   {
     return(nullptr);
-  }else if((this->type == "internal") &&
+  }else if((isInternal()) &&
            (srcState->isCompoundState()) &&
            (tstates.every(lambda s: isDescendant(s,srcState))))
   {
@@ -136,6 +134,11 @@ OrderedSet<State*> getEffectiveTargetStates() const
     }
   }
   return(targets);
+}
+
+bool Transition::isInternal() const
+{
+  return(transitionType == TransitionType_Internal);
 }
 
 

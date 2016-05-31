@@ -34,12 +34,20 @@ class State;
 class Transition: public StateMachineElement, public ActionContainer 
 {
 public:
+  enum TransitionType
+  {
+    TransitionType_External,
+    TransitionType_Internal
+  };
   Transition(const std::string& name,
              State* srcState,
              const std::string& triggerName,
-             const std::string& guard);
+             const std::string& guard,
+             TransitionType transitionType = TransitionType_External);
 
-  ~Transition();
+  Transition() = delete;
+  ~Transition() = default;
+  
   /** tests if the conditions of the event are satisfied
    * If the transition contains no event name, just the guard is checked.
    * If the event contains an event name, it is compared with the given one and
@@ -62,6 +70,8 @@ public:
   OrderedSet<State*> computeExitSet() const;
   State* getTransitionDomain() const;
   OrderedSet<State*> getEffectiveTargetStates() const;
+
+  bool isInternal() const;
 protected:
 
 private:
@@ -69,6 +79,7 @@ private:
   std::vector<State*> target;
   std::string triggerName;
   std::string guard; //< an expression evaluated by the data model
+  TransitionType transitionType;
 };
 
 } // namespace ssm

@@ -100,6 +100,11 @@ bool State::isHistoryState() const
   return(isHistory);
 }
 
+bool State::isCompoundState() const
+{
+  return(StateContainer::containsStates());
+}
+
 void State::enter()
 {
   executeOnEntry();

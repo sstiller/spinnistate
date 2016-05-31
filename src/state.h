@@ -60,6 +60,7 @@ public:
   bool isEntry() const;
 
   bool isHistoryState() const;
+  bool isCompoundState() const;
   
   void enter();
   void leave();

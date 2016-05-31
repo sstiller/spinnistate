@@ -53,4 +53,9 @@ State* StateContainer::findState(const std::string& name)
   return(existingStates.at(name).get());
 }
 
+bool StateContainer::containsStates() const
+{
+  return(! existingStates.empty());
+}
+
 } // namespace ssm
