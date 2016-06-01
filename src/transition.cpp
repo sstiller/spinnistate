@@ -114,8 +114,7 @@ State* Transition::getTransitionDomain() const
     return(srcState);
   }
   // else
-  //TODO: add findLCCA to... State as static?
-  return findLCCA(tStates.toList().append(srcState));
+  return State::findLCCA(tStates.toList().append(srcState));
 }
 
 OrderedSet<State*> Transition::getEffectiveTargetStates() const

@@ -113,7 +113,7 @@ public:
     List<T> retList;
     for(auto currentEntry : *this)
     {
-      retList.append(currentEntry);
+      retList.addEntry(currentEntry);
     }
     return(retList);
   }

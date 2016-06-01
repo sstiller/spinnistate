@@ -85,6 +85,11 @@ bool State::isAncestorOf(const State* other) const
   return(false);
 }
 
+bool State::isDescendantOf(const State* other) const
+{
+  return(other->isAncestorOf(this));
+}
+
 bool State::isParallel() const
 {
   return(parallel);
@@ -104,6 +109,28 @@ bool State::isCompoundState() const
 {
   return(StateContainer::containsStates());
 }
+
+List<State*> State::getProperAncestors(const State* state2) const
+{
+  List<State*> retList;
+  if(state2 &&
+     ((state2 == this) ||
+      (state2->isDescendantOf(this))
+     )
+    )
+  {
+    // empty set
+    return(retList);
+  }
+   
+  for(auto currentAncestor = getParent(); currentAncestor && (currentAncestor != state2); currentAncestor = currentAncestor->getParent())
+  {
+    retList.addEntry(currentAncestor);
+  } // for getParents
+
+  return(retList);
+}
+
 
 void State::enter()
 {
@@ -125,6 +152,25 @@ void State::leave()
 {
   executeOnExit();
 }
+
+// static
+
+State* State::findLCCA(List<State*> stateList)
+{
+  for(auto anc :
+      stateList.head()->
+        getProperAncestors(nullptr).
+          filter([](State* state){return(! state || state->isCompoundState());})) //  isCompoundStateOrScxmlElement))
+  {
+    if(stateList.tail().every(std::bind(&State::isDescendantOf, std::placeholders::_1, anc)))
+    {
+      return(anc);
+    }
+  }
+  return(nullptr);
+}
+
+
 
 } // namespace ssm
 

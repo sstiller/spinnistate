@@ -26,9 +26,15 @@ public:
 	/** Returns the tail of the list.
 	 * (i.e., the rest of the list once the head is removed)
 	 */
-	T& tail() const
+	List<T> tail() const
 	{
-		return(data.back());
+    List<T>retList;
+    retList.data = data;
+    if(! retList.data.empty())
+    {
+      retList.data.pop_front();
+    }
+		return(retList);
 	}
 
 	///< Returns the list appended with l
@@ -60,12 +66,17 @@ public:
 		{
 			if(f(currentEntry))
 			{
-				retList.append(currentEntry);
+				retList.addEntry(currentEntry);
 			}
 		}
 		return(retList);
 	};
 
+  void addEntry(const T& l)
+  {
+    data.push_back(l);
+  }
+  
 	/** Returns true if some element in the list satisfies the predicate f.
 	 * Returns false for an empty list.
 	 */
@@ -95,6 +106,16 @@ public:
 		}
 		return(true);
 	}
+
+  typename std::list<T>::const_iterator begin()
+  {
+    return(data.begin());
+  }
+  typename std::list<T>::const_iterator end()
+  {
+    return(data.end());
+  }
+
 private:
 	std::list<T> data;
 };
