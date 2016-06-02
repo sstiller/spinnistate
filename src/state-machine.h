@@ -14,6 +14,7 @@
 
 // local includes
 #include "ordered-set.h"
+#include "hash-table.h"
 #include "data-model.h"
 #include "state-container.h"
 #include "state-machine-element.h"
@@ -81,6 +82,9 @@ public:
 
   const OrderedSet<State*>& getConfiguration() const;
 
+  List<State*> getHistoryValue(const State* state) const;
+  void setHistoryValue(const State* state, List<State*>);
+
 protected:
 
   /** start with the current cative state and look for an executible transition
@@ -102,13 +106,14 @@ protected:
    * This simple vector implements the SCXML machine configuration. 
    */
   OrderedSet<State*> configuration;
-
+  
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states
   std::map <std::string, State*> statePointers;
   DataModel* dataModel;
   bool stateMachineInitialized;
   std::string dataModelInitScript;
+  HashTable<const State*, List<State*> > historyValue;
 };
 
 

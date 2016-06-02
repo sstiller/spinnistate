@@ -124,12 +124,30 @@ OrderedSet<State*> Transition::getEffectiveTargetStates() const
   {
     if(s->isHistoryState())
     {
-      if(historyValue[s.id])
+      auto historyValue = getStateMachine()->getHistoryValue(s);
+      if(! historyValue.empty())
       {
-        targets.union(historyValue[s.id])
+        /*TODO: Error in the standard?
+         * HistoryValue is a List:
+         *   procedure exitStates(enabledTransitions):
+         *     ...
+         *     historyValue[h.id] = configuration.toList().filter(f)
+         * But...
+         *   datatype OrderedSet
+         *     ...
+         *     procedure union(s)            // Adds all members of s that are not already members of the set (s must also be an OrderedSet)
+         *
+         * I will add a unite() accepting a list.
+         */
+        targets.unite(historyValue);
       }else
       {
-        targets.union(getEffectiveTargetStates(s.transition))
+        auto defaultTransition = s->findExecutibleTransition("");
+        if(defaultTransition)
+        {
+          targets.unite(defaultTransition->getEffectiveTargetStates());
+        }
+        //TODO: else error (missing transition)
       }
     }else
     {

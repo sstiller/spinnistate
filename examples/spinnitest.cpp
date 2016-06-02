@@ -98,9 +98,9 @@ int main(void)
 
   // transitions
   ssm::Transition* transition1_2 = hello1State->addTransition("trans 1-2",
-                                                         hello2State,
-                                                         "trigger1",
-                                                         "true");
+                                                              "trigger1",
+                                                              "true");
+  transition1_2->addTarget(hello2State);
   bool transTrue  = transition1_2->conditionsSatisfied("trigger1");
   if(!transTrue)
   {

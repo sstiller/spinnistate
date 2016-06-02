@@ -11,6 +11,8 @@
 namespace ssm // "Spinni state machine"
 {
 
+unsigned int StateMachineElement::currentElementCount = 0;
+    
 StateMachineElement::StateMachineElement(StateMachine* stateMachine, const std::string& name)
 : stateMachine(stateMachine),
   name(name),

@@ -107,11 +107,16 @@ public:
 		return(true);
 	}
 
-  typename std::list<T>::const_iterator begin()
+  bool empty() const
+  {
+    return(data.empty());
+  }
+
+  typename std::list<T>::const_iterator begin() const
   {
     return(data.begin());
   }
-  typename std::list<T>::const_iterator end()
+  typename std::list<T>::const_iterator end() const
   {
     return(data.end());
   }

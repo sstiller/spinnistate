@@ -32,6 +32,7 @@ libspinnistate_la_LIBADD =  \
 include_HEADERS = \
 	libspinnistate.h \
 	list.h \
+	hash-table.h \
 	ordered-set.h \
 	state-machine.h \
 	state.h \

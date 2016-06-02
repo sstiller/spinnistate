@@ -48,7 +48,15 @@ public:
   {
     for(auto currentElement : s)
     {
-      insert(currentElement);
+      addElement(currentElement);
+    }
+  };
+
+  void unite(const List<T>& s)
+  {
+    for(auto& currentElement : s)
+    {
+      addElement(currentElement);
     }
   };
 

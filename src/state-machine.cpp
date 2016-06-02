@@ -136,6 +136,22 @@ const OrderedSet<State*>& StateMachine::getConfiguration() const
   return(configuration);
 }
 
+List<State*> StateMachine::getHistoryValue(const State* state) const
+{
+  try{
+    return(historyValue.at(state));
+  }catch(...)
+  {
+  }
+  // return empty list
+  return(List<State*>());
+}
+
+void StateMachine::setHistoryValue(const State* state, List<State*> history)
+{
+  historyValue[state] = history;
+}
+
 // protected/private
 
 TransitionSet StateMachine::selectTransitions(const std::string& event)
