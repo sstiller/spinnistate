@@ -28,6 +28,19 @@ public:
   const StateMachine* getStateMachine() const;
   const std::string& getName() const;
   unsigned int getElementNumber() const;
+
+  static bool entryOrder(const StateMachineElement* first, const StateMachineElement* second)
+  {
+    // Ancestors precede descendants, with document order being used to break ties
+    // (Note:since ancestors precede descendants, this is equivalent to document order.)
+    return(first->getElementNumber() < second->getElementNumber());
+  }
+  static bool exitOrder(const StateMachineElement* first, const StateMachineElement* second)    
+  {
+    // Descendants precede ancestors, with reverse document order being used to break ties 
+    // (Note: since descendants follow ancestors, this is equivalent to reverse document order.)
+    return(first->getElementNumber() > second->getElementNumber());
+  }
 private:
   StateMachine* stateMachine;
   std::string name;

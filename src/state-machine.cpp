@@ -141,21 +141,28 @@ void StateMachine::processEvent(const std::string& eventName)
       break;
     }
     // or we've completed a macrostep, so we start a new macrostep by waiting for an external event
+#ifndef NOIMPLEMENT_INVOKE
+#error implement invoke stuff here
+    /* TODO: implement the "invoke" stuff"
     // Here we invoke whatever needs to be invoked. The implementation of 'invoke' is platform-specific
-    for(auto state : statesToInvoke.sort(entryOrder))
+    statesToInvoke.sort(StateMachineElement::entryOrder);
+    for(auto state : statesToInvoke)
     {
       for(auto inv : state.invoke.sort(documentOrder))
       {
         invoke(inv);
       }
     }
-    statesToInvoke.clear()
-
+    statesToInvoke.clear();
+    */
+#endif
+    // Invoking may have raised internal error events and we iterate to handle them        
+    if(! internalQueue.isEmpty())
+    {
+      continue;
+    }
     //TODO:
     /*
-    # Invoking may have raised internal error events and we iterate to handle them        
-    if not internalQueue.isEmpty():
-        continue
     # A blocking wait for an external event.  Alternatively, if we have been invoked
     # our parent session also might cancel us.  The mechanism for this is platform specific,
     # but here we assume it’s a special event we receive
@@ -297,7 +304,7 @@ TransitionSet StateMachine::removeConflictingTransitions(const TransitionSet& tr
   return(filteredTransitions);
 }
 
-void StateMachine::microstep(TransitionSet enabledTransitions)
+void StateMachine::microstep(List<Transition*> enabledTransitions)
 {
   exitStates(enabledTransitions);
   executeTransitionContent(enabledTransitions);

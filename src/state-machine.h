@@ -12,6 +12,8 @@
 // boost
 #include <boost/asio.hpp>
 
+#define NOIMPLEMENT_INVOKE
+
 // local includes
 #include "ordered-set.h"
 #include "hash-table.h"
@@ -122,9 +124,10 @@ protected:
    * Implements the SCXML machine configuration. 
    */
   OrderedSet<State*> configuration;
-
+#ifndef NOIMPLEMENT_INVOKE
+#error implement invoke stuff here
   OrderedSet<State*> statesToInvoke;
-  
+#endif  
   /** Internal event queue */
   Queue<std::string> internalQueue;
   /** External event queue */
