@@ -85,6 +85,14 @@ public:
   List<State*> getHistoryValue(const State* state) const;
   void setHistoryValue(const State* state, List<State*>);
 
+  /** Called by states after calling onEntry function.
+   */
+  void setStateActive(State* state);
+
+  /** Called by states after calling onExit function.
+   */
+  void resetStateActive(State* state);
+  
 protected:
 
   /** start with the current cative state and look for an executible transition
@@ -103,7 +111,7 @@ protected:
   boost::asio::io_service& ioService;
 
   /** Contains all active atomic states.
-   * This simple vector implements the SCXML machine configuration. 
+   * Implements the SCXML machine configuration. 
    */
   OrderedSet<State*> configuration;
   

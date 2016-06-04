@@ -135,6 +135,7 @@ List<State*> State::getProperAncestors(const State* state2) const
 void State::enter()
 {
   executeOnEntry();
+  getStateMachine()->setStateActive(this);
   if(isParallel())
   {
     std::cout << "State " << getName() << " TODO: Enter substates (because parallel)." << std::endl;
@@ -151,6 +152,7 @@ void State::enter()
 void State::leave()
 {
   executeOnExit();
+  getStateMachine()->resetStateActive(this);
 }
 
 // static

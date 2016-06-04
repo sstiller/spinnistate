@@ -152,6 +152,18 @@ void StateMachine::setHistoryValue(const State* state, List<State*> history)
   historyValue[state] = history;
 }
 
+void StateMachine::setStateActive(State* state)
+{
+  std::cout << __func__ << "(" << state->getName() << ") called" << std::endl;
+  configuration.addElement(state);
+}
+
+void StateMachine::resetStateActive(State* state)
+{
+  std::cout << __func__ << "(" << state->getName() << ") called" << std::endl;
+  configuration.deleteElement(state);
+}
+
 // protected/private
 
 TransitionSet StateMachine::selectTransitions(const std::string& event)
@@ -159,7 +171,7 @@ TransitionSet StateMachine::selectTransitions(const std::string& event)
   TransitionSet retSet;
   if(configuration.empty())
   {
-    throw(std::logic_error("Can not find transitions, current state == nullptr."));
+    throw(std::logic_error("Failed finding transitions, configuration is empty."));
   }
   for(State* currentState : configuration)
   {

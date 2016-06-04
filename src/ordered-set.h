@@ -37,7 +37,7 @@ public:
     auto pos = std::find(std::list<T>::begin(), std::list<T>::end(), e);
     if(pos != std::list<T>::end())
     {
-      erase(pos);
+      this->erase(pos);
     }
   }
 
