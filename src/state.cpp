@@ -54,6 +54,7 @@ Transition* State::addTransition(const std::string& name, const std::string& tri
 
 Transition* State::findExecutibleTransition(const std::string& event)
 {
+  std::cout << __func__ << "(" << event << ") in state " << getName() << " called." << std::endl; 
   for(auto& currentTransition : transitions)
   {
     if(currentTransition->conditionsSatisfied(event))

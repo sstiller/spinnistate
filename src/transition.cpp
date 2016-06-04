@@ -31,6 +31,7 @@ Transition::Transition(const std::string& name,
 
 bool Transition::conditionsSatisfied(const std::string& activeEventName)
 {
+  std::cout << __func__ << "() checking if \"" <<  activeEventName << "\" == \"" << triggerName << "\"." << std::endl;
   // check trigger
   if(triggerName.size())
   {

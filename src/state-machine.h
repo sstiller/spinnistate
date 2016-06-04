@@ -15,6 +15,7 @@
 // local includes
 #include "ordered-set.h"
 #include "hash-table.h"
+#include "queue.h"
 #include "data-model.h"
 #include "state-container.h"
 #include "state-machine-element.h"
@@ -24,7 +25,8 @@ namespace ssm // "Spinni state machine"
 {
 class Transition;
 
-typedef std::set<Transition*, StateMachineElement::PointerDocOrderCompare> TransitionSet;
+//typedef std::set<Transition*, StateMachineElement::PointerDocOrderCompare> TransitionSet;
+typedef OrderedSet<Transition*> TransitionSet;
   
 class StateMachine : public StateContainer
 {
@@ -92,7 +94,8 @@ public:
   /** Called by states after calling onExit function.
    */
   void resetStateActive(State* state);
-  
+
+  void printConfiguration() const;
 protected:
 
   /** start with the current cative state and look for an executible transition
@@ -106,6 +109,11 @@ protected:
    * Applies only for parallel states
    */
   TransitionSet removeConflictingTransitions(const TransitionSet& transitions);
+
+  void microstep(List<Transition*> enabledTransitions);
+  void exitStates(List<Transition*>&enabledTransitions);
+  void executeTransitionContent(List<Transition*>&enabledTransitions);
+  void enterStates(List<Transition*>&enabledTransitions);
   
   /// the io_service for this state machine instance
   boost::asio::io_service& ioService;
@@ -114,6 +122,13 @@ protected:
    * Implements the SCXML machine configuration. 
    */
   OrderedSet<State*> configuration;
+
+  OrderedSet<State*> statesToInvoke;
+  
+  /** Internal event queue */
+  Queue<std::string> internalQueue;
+  /** External event queue */
+  Queue<std::string> externalQueue;
   
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states
@@ -122,6 +137,7 @@ private:
   bool stateMachineInitialized;
   std::string dataModelInitScript;
   HashTable<const State*, List<State*> > historyValue;
+  bool running;
 };
 
 

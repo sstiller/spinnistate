@@ -90,17 +90,16 @@ int main(void)
   }
   std::cout << "OK: ChaiScriptDataModel" << std::endl;
 
-  // init state machine
-  stateMachine.init("");
-  
-  // start machine
-  stateMachine.start(); // go to initial (sub)state
-
   // transitions
   ssm::Transition* transition1_2 = hello1State->addTransition("trans 1-2",
                                                               "trigger1",
                                                               "true");
   transition1_2->addTarget(hello2State);
+  ssm::Transition* transition2_1 = hello2State->addTransition("trans 2-1",
+                                                              "trigger2",
+                                                              "true");
+  transition2_1->addTarget(hello1State);
+
   bool transTrue  = transition1_2->conditionsSatisfied("trigger1");
   if(!transTrue)
   {
@@ -116,13 +115,21 @@ int main(void)
     return(1);
   }
   std::cout << "OK: transFalse false" << std::endl;
-  if(! transition1_2->execute("trigger1"))
-  {
-    std::cout << "Error: Transition " << transition1_2->getName() << " was not executed!" << std::endl;
-    return(1);
-  }
-  std::cout << "OK: Transition " << transition1_2->getName() << " executed" << std::endl;
+//  if(! transition1_2->execute("trigger1"))
+//  {
+//    std::cout << "Error: Transition " << transition1_2->getName() << " was not executed!" << std::endl;
+//    return(1);
+//  }
+//  std::cout << "OK: Transition " << transition1_2->getName() << " executed" << std::endl;
 
+
+  // init state machine
+  stateMachine.init("");
+  // start machine
+  stateMachine.start(); // go to initial (sub)state
+
+  stateMachine.printConfiguration();
+  stateMachine.processEvent("trigger1");
 //  ioService.run();
   
   return(0);

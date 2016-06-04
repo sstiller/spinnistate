@@ -15,7 +15,8 @@ StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel* dataMo
 : StateContainer(this),
   ioService(ioService),
   dataModel(dataModel),
-  stateMachineInitialized(false)
+  stateMachineInitialized(false),
+  running(false)
 {
   if(!dataModel)
   {
@@ -88,6 +89,9 @@ void StateMachine::start()
   {
     dataModel->executeAction(dataModelInitScript);
   }
+
+  running = true;
+  //TODO: fix this:
   if(entryState)
   {
     entryState->enter();
@@ -98,6 +102,9 @@ void StateMachine::start()
 
 void StateMachine::processEvent(const std::string& eventName)
 {
+  //TODO: set somewhere else and remove eventName param
+  externalQueue.enqueue(eventName);
+  
   std::cout << __func__ << "(" << eventName << ") called." << std::endl;
   bool done = false;
   do
@@ -109,12 +116,64 @@ void StateMachine::processEvent(const std::string& eventName)
       TransitionSet enabledTransitions = selectTransitions();
       if(enabledTransitions.empty())
       {
+        if(internalQueue.isEmpty())
+        {
+          macrostepDone = true;
+        }else
+        {
+          auto internalEvent = internalQueue.dequeue();
+          //TODO: datamodel["_event"] = internalEvent
+          enabledTransitions = selectTransitions(internalEvent);
+        }
         std::cout << __func__ << "() Would check internal events" << std::endl;
         macrostepDone = true; //TODO: Only if internal queue is empty!
-      }else{
-        std::cout << __func__ << "() Would execute microstep because eventless transition possible" << std::endl;
+      }
+
+      if(! enabledTransitions.empty())
+      {
+        microstep(enabledTransitions.toList());
       }
     }
+
+    //  either we're in a final state, and we break out of the loop 
+    if(! running)
+    {
+      break;
+    }
+    // or we've completed a macrostep, so we start a new macrostep by waiting for an external event
+    // Here we invoke whatever needs to be invoked. The implementation of 'invoke' is platform-specific
+    for(auto state : statesToInvoke.sort(entryOrder))
+    {
+      for(auto inv : state.invoke.sort(documentOrder))
+      {
+        invoke(inv);
+      }
+    }
+    statesToInvoke.clear()
+
+    //TODO:
+    /*
+    # Invoking may have raised internal error events and we iterate to handle them        
+    if not internalQueue.isEmpty():
+        continue
+    # A blocking wait for an external event.  Alternatively, if we have been invoked
+    # our parent session also might cancel us.  The mechanism for this is platform specific,
+    # but here we assume it’s a special event we receive
+    externalEvent = externalQueue.dequeue()
+    if isCancelEvent(externalEvent):
+        running = false
+        continue
+    datamodel["_event"] = externalEvent
+    for state in configuration:
+        for inv in state.invoke:
+            if inv.invokeid == externalEvent.invokeid:
+                applyFinalize(inv, externalEvent)
+            if inv.autoforward:
+                send(inv.id, externalEvent) 
+    enabledTransitions = selectTransitions(externalEvent)
+    if not enabledTransitions.isEmpty():
+        microstep(enabledTransitions.toList()) 
+     */
 
     if(finalReached())
     {
@@ -164,6 +223,16 @@ void StateMachine::resetStateActive(State* state)
   configuration.deleteElement(state);
 }
 
+void StateMachine::printConfiguration() const
+{
+  std::cout << "Current config SM:\n";
+  for(auto state : configuration)
+  {
+    std::cout << "\t" << state->getName() << "\n";
+  }
+  std::cout << std::flush;
+}
+
 // protected/private
 
 TransitionSet StateMachine::selectTransitions(const std::string& event)
@@ -180,7 +249,7 @@ TransitionSet StateMachine::selectTransitions(const std::string& event)
       Transition* retTransition = currentState->findExecutibleTransition(event);
       if(retTransition)
       {
-        retSet.insert(retTransition); // double entries will not happen because of std::set
+        retSet.addElement(retTransition); // double entries will not happen because of std::set
         break; // continue for loop
       }
       currentState = currentState->getParent(); // if no parent state --> top level state
@@ -195,8 +264,7 @@ TransitionSet StateMachine::selectTransitions(const std::string& event)
 
 TransitionSet StateMachine::removeConflictingTransitions(const TransitionSet& transitions)
 {
-  std::set<Transition*, StateMachineElement::PointerDocOrderCompare> filteredTransitions;
-  std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
+  TransitionSet filteredTransitions;
   for(auto t1 : transitions)
   {
     bool t1Preemted(false);
@@ -221,12 +289,34 @@ TransitionSet StateMachine::removeConflictingTransitions(const TransitionSet& tr
     {
       for(auto t3 : transitionsToRemove)
       {
-        filteredTransitions.erase(t3);
+        filteredTransitions.deleteElement(t3);
       }
-      filteredTransitions.insert(t1);
+      filteredTransitions.addElement(t1);
     }
   }
   return(filteredTransitions);
+}
+
+void StateMachine::microstep(TransitionSet enabledTransitions)
+{
+  exitStates(enabledTransitions);
+  executeTransitionContent(enabledTransitions);
+  enterStates(enabledTransitions);
+}
+
+void StateMachine::exitStates(List<Transition*>& enabledTransitions)
+{
+  std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
+}
+
+void StateMachine::executeTransitionContent(List<Transition*>& enabledTransitions)
+{
+  std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
+}
+
+void StateMachine::enterStates(List<Transition*>& enabledTransitions)
+{
+  std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
 }
 
 } // namespace ssm 

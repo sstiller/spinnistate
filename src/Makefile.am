@@ -34,6 +34,7 @@ include_HEADERS = \
 	list.h \
 	hash-table.h \
 	ordered-set.h \
+	queue.h \
 	state-machine.h \
 	state.h \
 	state-container.h \
