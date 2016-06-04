@@ -52,7 +52,7 @@ Transition* State::addTransition(const std::string& name, const std::string& tri
   return(transitions.back().get());
 }
 
-Transition* State::findExecutibleTransition(const std::string& event)
+Transition* State::findExecutibleTransition(const Event& event)
 {
   std::cout << __func__ << "(" << event << ") in state " << getName() << " called." << std::endl; 
   for(auto& currentTransition : transitions)

@@ -100,15 +100,16 @@ void StateMachine::start()
   }
 }
 
-void StateMachine::processEvent(const std::string& eventName)
+void StateMachine::processExternalEvent(const Event externalEvent)
 {
-  //TODO: set somewhere else and remove eventName param
-  externalQueue.enqueue(eventName);
-  
-  std::cout << __func__ << "(" << eventName << ") called." << std::endl;
-  bool done = false;
+  ioService.post(std::bind(&StateMachine::executeMacrosteps, this, externalEvent));
+}
+void StateMachine::executeMacrosteps(const Event& externalEvent)
+{
+  std::cout << __func__ << "(" << externalEvent << ") called." << std::endl;
   do
   {
+    // handle internal events
     bool macrostepDone = false;
     while(! macrostepDone)
     {
@@ -138,11 +139,11 @@ void StateMachine::processEvent(const std::string& eventName)
     //  either we're in a final state, and we break out of the loop 
     if(! running)
     {
-      break;
+      return;
     }
     // or we've completed a macrostep, so we start a new macrostep by waiting for an external event
-#ifndef NOIMPLEMENT_INVOKE
-#error implement invoke stuff here
+  #ifndef NOIMPLEMENT_INVOKE
+  #error implement invoke stuff here
     /* TODO: implement the "invoke" stuff"
     // Here we invoke whatever needs to be invoked. The implementation of 'invoke' is platform-specific
     statesToInvoke.sort(StateMachineElement::entryOrder);
@@ -155,39 +156,38 @@ void StateMachine::processEvent(const std::string& eventName)
     }
     statesToInvoke.clear();
     */
-#endif
+  #endif
     // Invoking may have raised internal error events and we iterate to handle them        
-    if(! internalQueue.isEmpty())
-    {
-      continue;
-    }
-    //TODO:
-    /*
-    # A blocking wait for an external event.  Alternatively, if we have been invoked
-    # our parent session also might cancel us.  The mechanism for this is platform specific,
-    # but here we assume it’s a special event we receive
-    externalEvent = externalQueue.dequeue()
-    if isCancelEvent(externalEvent):
-        running = false
-        continue
-    datamodel["_event"] = externalEvent
-    for state in configuration:
-        for inv in state.invoke:
-            if inv.invokeid == externalEvent.invokeid:
-                applyFinalize(inv, externalEvent)
-            if inv.autoforward:
-                send(inv.id, externalEvent) 
-    enabledTransitions = selectTransitions(externalEvent)
-    if not enabledTransitions.isEmpty():
-        microstep(enabledTransitions.toList()) 
-     */
+  } while(! internalQueue.isEmpty());
 
-    if(finalReached())
+  datamodel["_event"] = externalEvent;
+#ifndef NOIMPLEMENT_INVOKE
+#error implement invoke stuff here
+  for(auto  state : configuration)
+  {
+    for(auto inv : state->invoke)
     {
-      break;
+      if(inv.invokeid == externalEvent.invokeid)
+      {
+        applyFinalize(inv, externalEvent);
+      }
+      if(inv.autoforward)
+      {
+        send(inv.id, externalEvent);
+      }
     }
-break;
-  }while(! done);
+  }
+#endif
+  enabledTransitions = selectTransitions(externalEvent);
+  if! enabledTransitions.isEmpty())
+  {
+    microstep(enabledTransitions.toList());
+  }
+
+  if(finalReached())
+  {
+#error what now?
+  }
   std::cout << __func__ << "() finished." << std::endl;
 }
 
@@ -242,7 +242,7 @@ void StateMachine::printConfiguration() const
 
 // protected/private
 
-TransitionSet StateMachine::selectTransitions(const std::string& event)
+TransitionSet StateMachine::selectTransitions(const Event& event)
 {
   TransitionSet retSet;
   if(configuration.empty())

@@ -18,6 +18,7 @@
 #include "ordered-set.h"
 #include "hash-table.h"
 #include "queue.h"
+#include "event.h"
 #include "data-model.h"
 #include "state-container.h"
 #include "state-machine-element.h"
@@ -71,12 +72,19 @@ public:
    */
   void start();
 
-  /** An event occured.
-   * Here the matching transitions / actions are processed.
-   * @todo rename to executeMacrostep?
+  /** External events are published to the SM using this function.
+   * The processing will be done asyncronously.
+   * The matching transitions / actions are processed.
+   * Calls executeMacrosteps
    * @param eventName the occured event.
    */
-  void processEvent(const std::string& eventName);
+  void processExternalEvent(const Event externalEvent);
+
+  /** Process internal and external events
+   * Here the matching transitions / actions are processed.
+   * @param eventName the occured event.
+   */
+  void executeMacrosteps(const Event& externalEvent = Event());
 
   /** Check if the state machine has finished
    * @return true if final state(s) reached 
@@ -129,9 +137,11 @@ protected:
   OrderedSet<State*> statesToInvoke;
 #endif  
   /** Internal event queue */
-  Queue<std::string> internalQueue;
-  /** External event queue */
-  Queue<std::string> externalQueue;
+  Queue<Event> internalQueue;
+
+  // TODO: remove
+  // /** External event queue */
+  // Queue<Event> externalQueue;
   
 private:
   /// needed to check if a state name already exists in a state machine and for faster access to states

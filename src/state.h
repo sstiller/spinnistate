@@ -45,7 +45,7 @@ public:
    * @param event the currently active event (may be empty string)
    * @return pointer to the first transition with matching conditions or nullptr if none found
    */
-  Transition* findExecutibleTransition(const std::string& event);
+  Transition* findExecutibleTransition(const Event& event);
   
   State* getParent() const;
 

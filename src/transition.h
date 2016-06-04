@@ -55,12 +55,12 @@ public:
    * satisfied.
    * @param eventName the name of the current event (or or empty string)
    * @returns true if the condition is satisfied */
-  bool conditionsSatisfied(const std::string& activeEventName);
+  bool conditionsSatisfied(const Event& activeEvent);
 
   /** exectues the transition if  conditionsSatisfied returns true.
    * @param eventName the name of the current event (or empty string)
    * @returns true if the transition was executed */
-  bool execute(const std::string& activeEventName);
+  bool execute(const Event& activeEvent);
 
   State* getSrcState() const;
   std::vector<State*> getTarget() const;
@@ -75,9 +75,11 @@ public:
 protected:
 
 private:
+  std::vector<std::string> splitEvent() const;
+
   State* srcState;
   std::vector<State*> target;
-  std::string triggerName;
+  std::string event; // space separated list
   std::string guard; //< an expression evaluated by the data model
   TransitionType transitionType;
 };

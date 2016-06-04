@@ -22,7 +22,9 @@ libspinnistate_la_SOURCES = \
 	data-model.cpp \
 	chai-script-data-model.cpp \
 	transition.cpp \
-	state-machine-element.cpp
+	state-machine-element.cpp \
+	event.cpp \
+	event.h
 
 libspinnistate_la_LDFLAGS = 
 

@@ -29,14 +29,25 @@ Transition::Transition(const std::string& name,
   
 }
 
-bool Transition::conditionsSatisfied(const std::string& activeEventName)
+bool Transition::conditionsSatisfied(const Event& activeEvent)
 {
-  std::cout << __func__ << "() checking if \"" <<  activeEventName << "\" == \"" << triggerName << "\"." << std::endl;
+  std::cout << __func__ << "() checking if \"" <<  activeEvent << "\" matches \"" << event << "\"." << std::endl;
   // check trigger
-  if(triggerName.size())
+  if(event.size())
   {
-    if(activeEventName != triggerName)
+    bool eventMatches = false;
+    auto eventElements = splitEvent();
+    for(auto currentEvent : eventElements)
     {
+      if(currentEvent.matches(activeEvent)
+      {
+        eventMatches = true;
+        break;
+      }
+    }
+    if(! eventMatches)
+    {
+      // we have events and they don't match.
       return(false);
     }
   }
@@ -51,9 +62,9 @@ bool Transition::conditionsSatisfied(const std::string& activeEventName)
  return(true);
 }
 
-bool Transition::execute(const std::string& activeEventName)
+bool Transition::execute(const Event& activeEvent)
 {
-  if(!conditionsSatisfied(activeEventName))
+  if(!conditionsSatisfied(activeEvent))
   {
     return(false);
   }
@@ -163,6 +174,17 @@ bool Transition::isInternal() const
   return(transitionType == TransitionType_Internal);
 }
 
+std::vector<std::string> TransitionsplitEvent() const
+{
+  std::vector<std::string> retVector;
+  std::stringstream ss(event);
+  std::string currentElement;
+  while (std::getline(ss, currentElement, ' '))
+  {
+      retVector.push_back(item);
+  }
+  return retVector;
+}  
 
 } // namespace ssm
 
