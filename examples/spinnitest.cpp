@@ -92,15 +92,15 @@ int main(void)
 
   // transitions
   ssm::Transition* transition1_2 = hello1State->addTransition("trans 1-2",
-                                                              "trigger1",
                                                               "true");
+  transition1_2->addEvent(ssm::Event("trigger1"));
   transition1_2->addTarget(hello2State);
   ssm::Transition* transition2_1 = hello2State->addTransition("trans 2-1",
-                                                              "trigger2",
                                                               "true");
+  transition2_1->addEvent(ssm::Event("trigger2"));
   transition2_1->addTarget(hello1State);
 
-  bool transTrue  = transition1_2->conditionsSatisfied("trigger1");
+  bool transTrue  = transition1_2->conditionsSatisfied(ssm::Event("trigger1"));
   if(!transTrue)
   {
     std::cout << "Error: transTrue not true" << std::endl;
@@ -108,7 +108,7 @@ int main(void)
   }
   std::cout << "OK: transTrue true" << std::endl;
     
-  bool transFalse = transition1_2->conditionsSatisfied("");
+  bool transFalse = transition1_2->conditionsSatisfied(ssm::Event());
   if(transFalse != false)
   {
     std::cout << "Error: transFalse not false" << std::endl;
@@ -129,8 +129,8 @@ int main(void)
   stateMachine.start(); // go to initial (sub)state
 
   stateMachine.printConfiguration();
-  stateMachine.processEvent("trigger1");
-//  ioService.run();
+  stateMachine.processExternalEvent(ssm::Event("trigger1"));
+  ioService.run();
   
   return(0);
 }

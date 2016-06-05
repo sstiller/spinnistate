@@ -22,7 +22,7 @@ public:
   Event(const std::string& descriptor);
   ~Event() = default;
   bool matches(const Event& other) const;
-  operator std::string() const
+  std::string getDescriptor() const
   {
     return(descriptor);
   }

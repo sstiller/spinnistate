@@ -23,8 +23,7 @@ libspinnistate_la_SOURCES = \
 	chai-script-data-model.cpp \
 	transition.cpp \
 	state-machine-element.cpp \
-	event.cpp \
-	event.h
+	event.cpp
 
 libspinnistate_la_LDFLAGS = 
 
@@ -44,7 +43,8 @@ include_HEADERS = \
 	data-model.h \
 	chai-script-data-model.h \
 	transition.h \
-	state-machine-element.h
+	state-machine-element.h \
+	event.h
 
 
 pkgconfigdir = $(libdir)/pkgconfig

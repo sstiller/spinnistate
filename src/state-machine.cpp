@@ -104,9 +104,12 @@ void StateMachine::processExternalEvent(const Event externalEvent)
 {
   ioService.post(std::bind(&StateMachine::executeMacrosteps, this, externalEvent));
 }
+
 void StateMachine::executeMacrosteps(const Event& externalEvent)
 {
   std::cout << __func__ << "(" << externalEvent << ") called." << std::endl;
+  TransitionSet enabledTransitions;
+  
   do
   {
     // handle internal events
@@ -114,7 +117,7 @@ void StateMachine::executeMacrosteps(const Event& externalEvent)
     while(! macrostepDone)
     {
       // check for eventless transitions
-      TransitionSet enabledTransitions = selectTransitions();
+      enabledTransitions = selectTransitions();
       if(enabledTransitions.empty())
       {
         if(internalQueue.isEmpty())
@@ -160,7 +163,7 @@ void StateMachine::executeMacrosteps(const Event& externalEvent)
     // Invoking may have raised internal error events and we iterate to handle them        
   } while(! internalQueue.isEmpty());
 
-  datamodel["_event"] = externalEvent;
+  /* TODO: datamodel["_event"] = externalEvent; */
 #ifndef NOIMPLEMENT_INVOKE
 #error implement invoke stuff here
   for(auto  state : configuration)
@@ -179,14 +182,14 @@ void StateMachine::executeMacrosteps(const Event& externalEvent)
   }
 #endif
   enabledTransitions = selectTransitions(externalEvent);
-  if! enabledTransitions.isEmpty())
+  if(! enabledTransitions.isEmpty())
   {
     microstep(enabledTransitions.toList());
   }
 
   if(finalReached())
   {
-#error what now?
+    std::cout << __PRETTY_FUNCTION__ << " TODO: WHAT NOW?" << std::endl;
   }
   std::cout << __func__ << "() finished." << std::endl;
 }
@@ -313,7 +316,48 @@ void StateMachine::microstep(List<Transition*> enabledTransitions)
 
 void StateMachine::exitStates(List<Transition*>& enabledTransitions)
 {
+  //state->leave()
   std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
+  OrderedSet<State*> statesToExit;
+  for(auto currentTransition : enabledTransitions)
+  {
+    statesToExit.unite(currentTransition->computeExitSet());           
+  }
+  
+#ifndef NOIMPLEMENT_INVOKE
+#error implement invoke stuff here
+  for(auto s : statesToExit)
+  {
+    statesToInvoke.delete(s)
+  }
+#endif
+  statesToExit.sort(StateMachineElement::exitOrder);
+  for(auto s : statesToExit)
+  {
+    for(auto h : s->history)
+    {
+      if(h.type == "deep")
+      {
+        f = lambda s0: isAtomicState(s0) and isDescendant(s0,s);
+      }else:
+      {
+        f = lambda s0: s0.parent == s;
+      }
+      historyValue[h.id] = configuration.toList().filter(f);
+    }
+  }
+  for (auto s : statesToExit)
+  {
+    for(content in s.onexit.sort(documentOrder))
+    {
+      executeContent(content);
+    }
+    for(inv in s.invoke)
+    {
+      cancelInvoke(inv);
+    }
+    configuration.delete(s);
+  }
 }
 
 void StateMachine::executeTransitionContent(List<Transition*>& enabledTransitions)

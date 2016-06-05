@@ -15,13 +15,11 @@ namespace ssm // "Spinni state machine"
 
 Transition::Transition(const std::string& name,
                        State* srcState,
-                       const std::string& triggerName,
                        const std::string& guard,
                        Transition::TransitionType transitionType)
 : StateMachineElement(srcState->getStateMachine(), name),
   ActionContainer(getStateMachine()),
   srcState(srcState),
-  triggerName(triggerName),
   guard(guard),
   transitionType(transitionType)
 {
@@ -29,17 +27,21 @@ Transition::Transition(const std::string& name,
   
 }
 
+void Transition::addEvent(const Event& ev)
+{
+  event.push_back(ev);
+}
+
 bool Transition::conditionsSatisfied(const Event& activeEvent)
 {
-  std::cout << __func__ << "() checking if \"" <<  activeEvent << "\" matches \"" << event << "\"." << std::endl;
+  std::cout << __func__ << "() in " << getName() << ": checking if \"" <<  activeEvent.getDescriptor() << "\" matches local events." << std::endl;
   // check trigger
   if(event.size())
   {
     bool eventMatches = false;
-    auto eventElements = splitEvent();
-    for(auto currentEvent : eventElements)
+    for(auto currentEvent : event)
     {
-      if(currentEvent.matches(activeEvent)
+      if(currentEvent.matches(activeEvent))
       {
         eventMatches = true;
         break;
@@ -154,7 +156,7 @@ OrderedSet<State*> Transition::getEffectiveTargetStates() const
         targets.unite(historyValue);
       }else
       {
-        auto defaultTransition = s->findExecutibleTransition("");
+        auto defaultTransition = s->findExecutibleTransition(Event());
         if(defaultTransition)
         {
           targets.unite(defaultTransition->getEffectiveTargetStates());
@@ -173,18 +175,6 @@ bool Transition::isInternal() const
 {
   return(transitionType == TransitionType_Internal);
 }
-
-std::vector<std::string> TransitionsplitEvent() const
-{
-  std::vector<std::string> retVector;
-  std::stringstream ss(event);
-  std::string currentElement;
-  while (std::getline(ss, currentElement, ' '))
-  {
-      retVector.push_back(item);
-  }
-  return retVector;
-}  
 
 } // namespace ssm
 

@@ -113,7 +113,7 @@ protected:
    * @return pointers to the selected transitions or empty set if none found
    * @throws std::logic_error if no active state 
    */
-  TransitionSet selectTransitions(const std::string& event = std::string());
+  TransitionSet selectTransitions(const Event& event = Event());
 
   /** remove transitions which can not be executed in parall.
    * Applies only for parallel states

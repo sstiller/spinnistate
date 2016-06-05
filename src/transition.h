@@ -41,12 +41,13 @@ public:
   };
   Transition(const std::string& name,
              State* srcState,
-             const std::string& triggerName,
              const std::string& guard,
              TransitionType transitionType = TransitionType_External);
 
   Transition() = delete;
   ~Transition() = default;
+
+  void addEvent(const Event& ev);
   
   /** tests if the conditions of the event are satisfied
    * If the transition contains no event name, just the guard is checked.
@@ -75,11 +76,9 @@ public:
 protected:
 
 private:
-  std::vector<std::string> splitEvent() const;
-
   State* srcState;
   std::vector<State*> target;
-  std::string event; // space separated list
+  std::vector<Event> event;
   std::string guard; //< an expression evaluated by the data model
   TransitionType transitionType;
 };

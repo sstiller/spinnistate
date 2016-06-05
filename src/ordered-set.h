@@ -125,7 +125,11 @@ public:
     }
     return(retList);
   }
- 
+
+  bool isEmpty() const
+  {
+    return(std::list<T>::empty());
+  }
 //private:
 //	std::list<T> data;
 };

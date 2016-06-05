@@ -46,15 +46,15 @@ State* State::getState(const std::string name, bool create)
   return(addState(name, this));
 }
 
-Transition* State::addTransition(const std::string& name, const std::string& triggerName, const std::string& guard)
+Transition* State::addTransition(const std::string& name, const std::string& guard)
 {
-  transitions.push_back(std::unique_ptr<Transition>(new Transition(name, this, triggerName, guard)));
+  transitions.push_back(std::unique_ptr<Transition>(new Transition(name, this, guard)));
   return(transitions.back().get());
 }
 
 Transition* State::findExecutibleTransition(const Event& event)
 {
-  std::cout << __func__ << "(" << event << ") in state " << getName() << " called." << std::endl; 
+  std::cout << __func__ << "(" << event.getDescriptor() << ") in state " << getName() << " called." << std::endl; 
   for(auto& currentTransition : transitions)
   {
     if(currentTransition->conditionsSatisfied(event))
