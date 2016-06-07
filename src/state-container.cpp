@@ -26,14 +26,14 @@ StateContainer::~StateContainer()
 {
 }
 
-State* StateContainer::addState(const std::string name, State* parentState)
+State* StateContainer::addState(const std::string name, State* parentState, StateType stateType)
 {
   if(existingStates.find(name) != existingStates.end())
   {
     throw(std::logic_error("State with the given name already exists!"));
   }
 
-  State* newState = new State(name, stateMachine, parentState);
+  State* newState = new State(name, stateMachine, parentState, stateType);
   existingStates.insert(std::pair<std::string, std::unique_ptr<State> >(name, std::unique_ptr<State>(newState)));
   stateMachine->announceState(existingStates.at(name).get());
   if(existingStates.size() == 1)
@@ -41,7 +41,7 @@ State* StateContainer::addState(const std::string name, State* parentState)
     // take the first state as antry state
     entryState = newState;
   }
-  if(newState->isEntry())
+  if(newState->isInitial())
   {
     entryState = newState;
   }
@@ -56,6 +56,19 @@ State* StateContainer::findState(const std::string& name)
 bool StateContainer::containsStates() const
 {
   return(! existingStates.empty());
+}
+
+List<State*> StateContainer::getHistory() const
+{
+  List<State*> retList;
+  for(auto entryPair : existingStates)
+  {
+    if(entryPair.second->isHistoryState())
+    {
+      retList.addEntry(entryPair.second.get());
+    }
+  }
+  return(retList);
 }
 
 } // namespace ssm

@@ -5,6 +5,10 @@
  *
  */
 
+// stl
+#include <functional>
+
+// local includes
 #include "state-machine.h"
 #include "state.h"
 
@@ -28,7 +32,7 @@ StateMachine::~StateMachine()
 {
 }
 
-State* StateMachine::getState(const std::string name, bool create)
+State* StateMachine::getState(const std::string name, StateType stateType, bool create)
 {
   try{
     return(findState(name));
@@ -40,7 +44,7 @@ State* StateMachine::getState(const std::string name, bool create)
     }
   }
 
-  return(addState(name, nullptr));
+  return(addState(name, nullptr, stateType));
 }
 
 void StateMachine::announceState(State* newState)
@@ -129,7 +133,7 @@ void StateMachine::executeMacrosteps(const Event& externalEvent)
           //TODO: datamodel["_event"] = internalEvent
           enabledTransitions = selectTransitions(internalEvent);
         }
-        std::cout << __func__ << "() Would check internal events" << std::endl;
+        std::cout << __func__ << "() TODO: check internal events" << std::endl;
         macrostepDone = true; //TODO: Only if internal queue is empty!
       }
 
@@ -317,7 +321,7 @@ void StateMachine::microstep(List<Transition*> enabledTransitions)
 void StateMachine::exitStates(List<Transition*>& enabledTransitions)
 {
   //state->leave()
-  std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
+  std::cout << __PRETTY_FUNCTION__ << " called." << std::endl;
   OrderedSet<State*> statesToExit;
   for(auto currentTransition : enabledTransitions)
   {
@@ -332,31 +336,30 @@ void StateMachine::exitStates(List<Transition*>& enabledTransitions)
   }
 #endif
   statesToExit.sort(StateMachineElement::exitOrder);
-  for(auto s : statesToExit)
+  for(State* s : statesToExit)
   {
-    for(auto h : s->history)
+    for(auto h : s->getHistory())
     {
-      if(h.type == "deep")
+      std::function<bool(State*)> f;
+      if(h->getStateType() == StateType::HistoryDeep)
       {
-        f = lambda s0: isAtomicState(s0) and isDescendant(s0,s);
-      }else:
+        f = [s](State* s0)
+        {
+          return(s0->isAtomicState() && s0->isDescendantOf(s));
+        };
+      }else
       {
-        f = lambda s0: s0.parent == s;
+        f = [s](State* s0)
+        {
+          return(s0->getParent() == s);
+        };
       }
-      historyValue[h.id] = configuration.toList().filter(f);
+      historyValue[h] = configuration.toList().filter(f);
     }
   }
   for (auto s : statesToExit)
   {
-    for(content in s.onexit.sort(documentOrder))
-    {
-      executeContent(content);
-    }
-    for(inv in s.invoke)
-    {
-      cancelInvoke(inv);
-    }
-    configuration.delete(s);
+    s->leave();
   }
 }
 

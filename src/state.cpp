@@ -4,19 +4,18 @@
  * Copyright (C) 2016 Sandro Stiller <sandro.stiller@gmx.de>
  *
  */
+#include "libspinnistate.h"
 #include "state.h"
 
 namespace ssm // "Spinni state machine"
 {
 
-State::State(const std::string& name, StateMachine* stateMachine, State* parent, bool isEntryState, bool parallel, bool history)
+State::State(const std::string& name, StateMachine* stateMachine, State* parent, StateType stateType)
 : StateMachineElement(stateMachine, name),
   StateContainer(stateMachine),
   ActionContainer(stateMachine),
   parentState(parent),
-  isEntryState(isEntryState),
-  parallel(parallel),
-  isHistory(history)
+  stateType(stateType)
 {
   if(getName().size() == 0)
   {
@@ -32,7 +31,7 @@ State::~State()
 {
 }
 
-State* State::getState(const std::string name, bool create)
+State* State::getState(const std::string name, StateType stateType, bool create)
 {
   try{
     return(findState(name));
@@ -43,7 +42,7 @@ State* State::getState(const std::string name, bool create)
       throw;
     }
   }
-  return(addState(name, this));
+  return(addState(name, this, stateType));
 }
 
 Transition* State::addTransition(const std::string& name, const std::string& guard)
@@ -91,24 +90,40 @@ bool State::isDescendantOf(const State* other) const
   return(other->isAncestorOf(this));
 }
 
-bool State::isParallel() const
+StateType State::getStateType() const
 {
-  return(parallel);
+  return(stateType);
 }
 
-bool State::isEntry() const
+bool State::isParallel() const
 {
-  return(isEntryState);
+  return(stateType == StateType::Parallel);
+}
+
+bool State::isInitial() const
+{
+  return(stateType == StateType::Initial);
 }
 
 bool State::isHistoryState() const
 {
-  return(isHistory);
+  return((stateType == StateType::HistoryDeep) ||
+         (stateType == StateType::HistoryShallow));
 }
 
 bool State::isCompoundState() const
 {
   return(StateContainer::containsStates());
+}
+
+bool State::isFinal() const
+{
+  return(stateType == StateType::Final);
+}
+
+bool State::isAtomicState() const
+{
+  return((! isCompoundState()) || isFinal());
 }
 
 List<State*> State::getProperAncestors(const State* state2) const
@@ -141,7 +156,7 @@ void State::enter()
   {
     std::cout << "State " << getName() << " TODO: Enter substates (because parallel)." << std::endl;
     //TODO: enter all the states
-  }else if(entryState)
+  }else if(isInitial())
   {
     std::cout << "State " << getName() << " is entering substate." << std::endl;
     entryState->enter();
@@ -153,6 +168,14 @@ void State::enter()
 void State::leave()
 {
   executeOnExit();
+
+#ifndef NOIMPLEMENT_INVOKE
+#error implement invoke stuff here
+    for(inv in s.invoke)
+    {
+      cancelInvoke(inv);
+    }
+#endif
   getStateMachine()->resetStateActive(this);
 }
 

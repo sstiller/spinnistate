@@ -12,6 +12,7 @@
 #include <string>
 
 // local includes
+#include "event.h"
 #include "state-machine-element.h"
 #include "action-container.h"
 #include "ordered-set.h"

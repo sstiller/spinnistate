@@ -24,33 +24,30 @@ ActionContainer::ActionContainer(StateMachine* stateMachine)
   }  
 }
 
-void ActionContainer::setOnEntryAction(const std::string& actionCommand)
+void ActionContainer::addOnEntryAction(const std::string& actionCommand)
 {
-  onEntryAction = actionCommand;
+  onEntryActions.addEntry(actionCommand);
 }
 
-void ActionContainer::setOnExitAction(const std::string& actionCommand)
+void ActionContainer::addOnExitAction(const std::string& actionCommand)
 {
-  onExitAction = actionCommand;
-}
-
-const std::string& ActionContainer::getOnEntryAction()
-{
-  return(onEntryAction);
-}
-const std::string& ActionContainer::getOnExitAction()
-{
-  return(onExitAction);
+  onExitActions.addEntry(actionCommand);
 }
 
 void ActionContainer::executeOnEntry()
 {
-  dataModel->executeAction(onEntryAction);
+  for(auto onEntryAction : onEntryActions)
+  {
+    dataModel->executeAction(onEntryAction);
+  }
 }
 
 void ActionContainer::executeOnExit()
 {
-  dataModel->executeAction(onExitAction);
+  for(auto onExitAction : onExitActions)
+  {
+    dataModel->executeAction(onExitAction);
+  }
 }
 
 } // namespace ssm

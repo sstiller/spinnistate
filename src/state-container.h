@@ -13,7 +13,8 @@
 #include <memory> // shared_ptr
 
 // local includes
-
+#include "libspinnistate.h"
+#include "list.h"
 
 namespace ssm // "Spinni state machine"
 {
@@ -32,7 +33,9 @@ public:
    * @throws std::out_of_range if the requested state is not existing and create == false 
    * @return reference to the requested state
    */
-  virtual State* getState(const std::string name, bool create = false) = 0;
+  virtual State* getState(const std::string name, StateType stateType = StateType::State, bool create = false) = 0;
+
+  List<State*> getHistory() const;
   
   protected:
   /** Create a new state and put it to the local container.
@@ -43,7 +46,7 @@ public:
    * @throws std::logic_error if a state with the given name already exists 
    * @return reference to the requested state
    */
-  State* addState(const std::string name, State* parentState);
+  State* addState(const std::string name, State* parentState, StateType stateType);
 
   /** get a state from the container
    * @param name the name of the wanted state
@@ -55,7 +58,7 @@ public:
   bool containsStates() const;
 
 protected:
-  std::map<std::string, std::unique_ptr<State> > existingStates;
+  std::map<std::string, std::shared_ptr<State> > existingStates;
   State* entryState;
 
 private:

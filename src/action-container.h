@@ -11,6 +11,8 @@
 // stl
 #include <string>
 
+// local includes
+#include "list.h"
 #include "data-model.h"
 #include "state-machine.h"
 
@@ -24,17 +26,15 @@ public:
   ActionContainer() = delete;
   ActionContainer(StateMachine* stateMachine);
   
-  void setOnEntryAction(const std::string& actionCommand);
-  void setOnExitAction(const std::string& actionCommand);
-  const std::string& getOnEntryAction();
-  const std::string& getOnExitAction();
+  void addOnEntryAction(const std::string& actionCommand);
+  void addOnExitAction(const std::string& actionCommand);
 protected:
   void executeOnEntry();
   void executeOnExit();
 
 private:
-  std::string onEntryAction;
-  std::string onExitAction;
+  List<std::string> onEntryActions;
+  List<std::string> onExitActions;
   StateMachine* stateMachine;
   DataModel* dataModel;
 };

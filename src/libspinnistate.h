@@ -1,3 +1,5 @@
+#ifndef _LIBSPINNISTATE_H
+#define _LIBSPINNISTATE_H
 /* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*-  */
 /*
  * libspinnistate.h
@@ -17,6 +19,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.";
  */
 
-#include "state.h"
-#include "state-machine.h"
 
+#include <cstdint>
+
+#define NOIMPLEMENT_INVOKE
+
+namespace ssm
+{
+
+enum class StateType : uint8_t
+{
+  State = 0,
+  Parallel,
+  Final,
+  Initial,
+  HistoryDeep,
+  HistoryShallow,
+};
+
+} // namespace ssm
+
+#include "state.h"
+//#include "state-machine.h"
+
+#endif // _LIBSPINNISTATE_H

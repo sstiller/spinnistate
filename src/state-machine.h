@@ -12,9 +12,8 @@
 // boost
 #include <boost/asio.hpp>
 
-#define NOIMPLEMENT_INVOKE
-
 // local includes
+#include "libspinnistate.h"
 #include "ordered-set.h"
 #include "hash-table.h"
 #include "queue.h"
@@ -42,7 +41,7 @@ public:
   StateMachine(boost::asio::io_service& ioService, DataModel* dataModel);
   virtual ~StateMachine();
 
-  State* getState(const std::string name, bool create = false) override;
+  State* getState(const std::string name, StateType stateType = StateType::State, bool create = false) override;
 
   /** add a reference to a created state to the local list
    * @param newState the new state reference to store

@@ -15,9 +15,9 @@ int main(void)
   ssm::StateMachine stateMachine(ioService, &dataModel);
 
   // adding (sub)states
-  ssm::State* hello1State = stateMachine.getState("Hello1", true);
-  ssm::State* hello12State = hello1State->getState("Hello12", true);
-  ssm::State* hello2State = stateMachine.getState("Hello2", true);
+  ssm::State* hello1State = stateMachine.getState("Hello1", ssm::StateType::State, true);
+  ssm::State* hello12State = hello1State->getState("Hello12", ssm::StateType::State, true);
+  ssm::State* hello2State = stateMachine.getState("Hello2", ssm::StateType::State, true);
   
   // check parents
   if(hello1State != hello12State->getParent())
@@ -28,20 +28,8 @@ int main(void)
   std::cout << "OK: Parent correct." << std::endl;
 
   // test action container
-  hello1State->setOnEntryAction("OnEntryFunction");
-  hello1State->setOnExitAction("OnExitFunction");
-  if(hello1State->getOnEntryAction() != "OnEntryFunction")
-  {
-    std::cerr << "Error: OnEntry wrong!." << std::endl;
-    return(1);
-  }
-  std::cout << "OK: OnEntry correct." << std::endl;
-  if(hello1State->getOnExitAction() != "OnExitFunction")
-  {
-    std::cerr << "Error: OnExit wrong!." << std::endl;
-    return(1);
-  }
-  std::cout << "OK: OnExit correct." << std::endl;
+  hello1State->addOnEntryAction("OnEntryFunction");
+  hello1State->addOnExitAction("OnExitFunction");
 
   // test exceptions
   try{
@@ -53,7 +41,7 @@ int main(void)
     std::cout << "OK: Exception 1 caught: " << exc.what() << std::endl;
   }
   try{
-    hello1State->getState("", true);
+    hello1State->getState("", ssm::StateType::State, true);
     std::cerr << "Error: No Exception 2 (invalid state name))." << std::endl;
     return(1);
   }catch(std::exception& exc)
@@ -61,7 +49,7 @@ int main(void)
     std::cout << "OK: Exception 2 caught: " << exc.what() << std::endl;
   }
   try{
-    hello12State->getState("Hello1", true);
+    hello12State->getState("Hello1", ssm::StateType::State, true);
     std::cerr << "Error: No Exception 3 (double state name)." << std::endl;
     return(1);
   }catch(std::exception& exc)
@@ -131,6 +119,7 @@ int main(void)
   stateMachine.printConfiguration();
   stateMachine.processExternalEvent(ssm::Event("trigger1"));
   ioService.run();
+  stateMachine.printConfiguration();
   
   return(0);
 }

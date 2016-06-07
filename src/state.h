@@ -29,15 +29,16 @@ class State : public StateMachineElement, public StateContainer, public ActionCo
 public:
   State() = delete;
   //State(State&&) = default;
+   // TODO: add parameters list instead of so many arguments?
   /** Create a new state
    * @param name the name of the new state
    * @param stateMachine the state machine the state belongs to
-   * @throws std::invalid_argument if name or stateMachine not valid or a state with the same name already exists 
+   * @throws std::invalid_argument if name or stateMachine not valid or a state with the same name already exists
    */
-  State(const std::string& name, StateMachine* stateMachine, State* parent = nullptr, bool isEntryState = false, bool parallel = false, bool history = false);
+  State(const std::string& name, StateMachine* stateMachine, State* parent = nullptr, StateType stateType = StateType::State);
   virtual ~State();
 
-  virtual State* getState(const std::string name, bool create = false) override;
+  virtual State* getState(const std::string name, StateType stateType = StateType::State, bool create = false) override;
 
   Transition* addTransition(const std::string& name, const std::string& guard);
 
@@ -60,14 +61,18 @@ public:
     */
   bool isDescendantOf(const State* other) const;
   
+  StateType getStateType() const;
+
   /** returns true if the state is a parallel state. */
   bool isParallel() const;
 
-  /** returns true if the state is an entry state. */
-  bool isEntry() const;
+  /** returns true if the state is a virtual entry state. */
+  bool isInitial() const;
 
   bool isHistoryState() const;
   bool isCompoundState() const;
+  bool isFinal() const;
+  bool isAtomicState() const;
 
   /** If state2 is null, returns the set of all ancestors of state1 in ancestry
     * order.
@@ -98,9 +103,7 @@ public:
 private:
   State* parentState; ///< nullptr if no parent state
   std::vector<std::unique_ptr<Transition> > transitions;
-  bool isEntryState;
-  bool parallel;
-  bool isHistory;
+  StateType stateType;
 };
 
 } // namespace ssm
