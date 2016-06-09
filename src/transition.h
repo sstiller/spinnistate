@@ -70,7 +70,7 @@ public:
   bool isTargetless() const;
   
   OrderedSet<State*> computeExitSet() const;
-  State* getTransitionDomain() const;
+  StateContainer* getTransitionDomain() const;
   OrderedSet<State*> getEffectiveTargetStates() const;
 
   bool isInternal() const;

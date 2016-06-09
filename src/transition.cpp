@@ -87,6 +87,7 @@ std::vector<State*> Transition::getTarget() const
 
 void Transition::addTarget(State* targetState)
 {
+  std::cout << __PRETTY_FUNCTION__ << " called (target = " << targetState->getName() << ")." << std::endl;
   target.push_back(targetState);
 }
 
@@ -98,41 +99,51 @@ bool Transition::isTargetless() const
 
 OrderedSet<State*> Transition::computeExitSet() const
 {
+  std::cout << __PRETTY_FUNCTION__ << " called (trans = " << getName() << ")." << std::endl;
   OrderedSet<State*> statesToExit;
   if(!isTargetless())
   {
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
     auto domain = getTransitionDomain();
     for(auto s : getStateMachine()->getConfiguration())
     {
-      if(domain->isAncestorOf(s))
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
+      if(s->isDescendantOf(domain))
       {
+        std::cout << __PRETTY_FUNCTION__ << " Adding state " << s->getName() << "." << std::endl;
         statesToExit.addElement(s);
       }
     }
   }
+  std::cout << __PRETTY_FUNCTION__ << " Returning " << statesToExit.size() << " states." << std::endl;
   return(statesToExit);   
 }
 
-State* Transition::getTransitionDomain() const
+StateContainer* Transition::getTransitionDomain() const
 {
+  std::cout << __PRETTY_FUNCTION__ << " called (trans = " << getName() << ")." << std::endl;
   auto tStates = getEffectiveTargetStates();
   if(tStates.empty())
   {
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
     return(nullptr);
   }else if((isInternal()) &&
            (srcState->isCompoundState()) &&
-           (tStates.every(std::bind(&State::isAncestorOf, srcState, std::placeholders::_1)))
+           (tStates.every(std::bind(&State::isDescendantOf, std::placeholders::_1, srcState)))
            //(tstates.every(lambda s: isDescendant(s,srcState)))
           )
   {
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
     return(srcState);
   }
   // else
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
   return State::findLCCA(tStates.toList().append(srcState));
 }
 
 OrderedSet<State*> Transition::getEffectiveTargetStates() const
 {
+  std::cout << __PRETTY_FUNCTION__ << " called (trans = " << getName() << ")." << std::endl;
   OrderedSet<State*> targets;
   for(auto s : target)
   {
@@ -173,6 +184,7 @@ OrderedSet<State*> Transition::getEffectiveTargetStates() const
 
 bool Transition::isInternal() const
 {
+  std::cout << __PRETTY_FUNCTION__ << " called (trans = " << getName() << ")." << std::endl;
   return(transitionType == TransitionType_Internal);
 }
 

@@ -98,7 +98,7 @@ public:
     * (parent or parent of a parent, etc.) the LCCA is never a member of
     * stateList.
     */ 
-  static State* findLCCA(List<State*> stateList);
+  StateContainer* findLCCA(List<State*> stateList);
   
 private:
   State* parentState; ///< nullptr if no parent state

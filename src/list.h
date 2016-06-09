@@ -121,6 +121,11 @@ public:
     return(data.end());
   }
 
+  unsigned int size()
+  {
+    return(data.size());
+  }
+  
 private:
 	std::list<T> data;
 };

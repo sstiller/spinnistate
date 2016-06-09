@@ -58,9 +58,11 @@ Transition* State::findExecutibleTransition(const Event& event)
   {
     if(currentTransition->conditionsSatisfied(event))
     {
+      std::cout << __func__ << "(): " << getName() << " found transition." << std::endl;
       return(currentTransition.get());
     }
   }
+  std::cout << __func__ << "(): " << getName() << " no transition." << std::endl;
   return(nullptr);
 }
 
@@ -87,6 +89,12 @@ bool State::isAncestorOf(const State* other) const
 
 bool State::isDescendantOf(const State* other) const
 {
+  if(!other)
+  {
+    std::cout << getName() << "." << __func__ << "(nullptr) called." << std::endl;
+    return(false);
+  }
+  std::cout << getName() << "." << __func__ << "(" << other->getName() << ") called." << std::endl;
   return(other->isAncestorOf(this));
 }
 
@@ -179,10 +187,9 @@ void State::leave()
   getStateMachine()->resetStateActive(this);
 }
 
-// static
-
-State* State::findLCCA(List<State*> stateList)
+StateContainer* State::findLCCA(List<State*> stateList)
 {
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
   for(auto anc :
       stateList.head()->
         getProperAncestors(nullptr).
@@ -190,10 +197,12 @@ State* State::findLCCA(List<State*> stateList)
   {
     if(stateList.tail().every(std::bind(&State::isDescendantOf, std::placeholders::_1, anc)))
     {
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
       return(anc);
     }
   }
-  return(nullptr);
+std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
+  return(getStateMachine());
 }
 
 

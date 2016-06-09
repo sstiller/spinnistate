@@ -251,6 +251,7 @@ void StateMachine::printConfiguration() const
 
 TransitionSet StateMachine::selectTransitions(const Event& event)
 {
+  std::cout << __PRETTY_FUNCTION__ << " called." << std::endl;
   TransitionSet retSet;
   if(configuration.empty())
   {
@@ -273,6 +274,7 @@ TransitionSet StateMachine::selectTransitions(const Event& event)
   {
     removeConflictingTransitions(retSet);
   }
+  std::cout << __PRETTY_FUNCTION__ << " Returning " << retSet.size() << " transitions." << std::endl;
   return(retSet);
 }
 
@@ -321,7 +323,7 @@ void StateMachine::microstep(List<Transition*> enabledTransitions)
 void StateMachine::exitStates(List<Transition*>& enabledTransitions)
 {
   //state->leave()
-  std::cout << __PRETTY_FUNCTION__ << " called." << std::endl;
+  std::cout << __PRETTY_FUNCTION__ << " called (" << enabledTransitions.size() << " transitions)." << std::endl;
   OrderedSet<State*> statesToExit;
   for(auto currentTransition : enabledTransitions)
   {
