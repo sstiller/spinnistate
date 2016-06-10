@@ -50,6 +50,11 @@ bool StateContainer::isDescendantOf(const StateContainer* other) const
   return(false);
 }
 
+bool StateContainer::isSCXMLElement() const
+{
+  return(this == getStateMachine());
+}
+
 State* StateContainer::addState(const std::string name, StateType stateType)
 {
   if(existingStates.find(name) != existingStates.end())

@@ -373,6 +373,54 @@ void StateMachine::executeTransitionContent(List<Transition*>& enabledTransition
 void StateMachine::enterStates(List<Transition*>& enabledTransitions)
 {
   std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
+  OrderedSet<State*>statesToEnter;
+  OrderedSet<State*>statesForDefaultEntry;
+#error implement me!
+  // initialize the temporary table for default content in history states
+  HashTable defaultHistoryContent; 
+  computeEntrySet(enabledTransitions, statesToEnter, statesForDefaultEntry, defaultHistoryContent) 
+  for(auto s : statesToEnter.toList().sort(entryOrder))
+  {
+    configuration.add(s)
+    statesToInvoke.add(s)
+    if(binding == "late" and s.isFirstEntry)
+    {
+      initializeDataModel(datamodel.s,doc.s)
+      s.isFirstEntry = false
+    }
+    for(auto content : s.onentry.sort(documentOrder))
+    {
+        executeContent(content);
+    }
+    if(statesForDefaultEntry.isMember(s))
+    {
+      executeContent(s.initial.transition);
+    }
+    if(defaultHistoryContent[s.id])
+    {
+      executeContent(defaultHistoryContent[s.id]);
+    }
+    if(s->isFinalState())
+    {
+      if(s->getParent()->isSCXMLElement())
+      {
+        running = false;
+      }
+      else
+      {
+        auto parent = s->getParent();
+        auto grandparent = parent->getParent();
+        internalQueue.enqueue(new Event("done.state." + parent.id, s.donedata));
+        if(isParallelState(grandparent))
+        {
+          if(getChildStates(grandparent).every(isInFinalState))
+          {
+            internalQueue.enqueue(new Event("done.state." + grandparent.id));
+          }
+        }
+      }
+    }
+  }
 }
 
 } // namespace ssm 

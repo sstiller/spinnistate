@@ -43,6 +43,7 @@ public:
     * Otherwise returns 'false'.
     */
   bool isDescendantOf(const StateContainer* other) const;
+  bool isSCXMLElement() const;
 
   List<State*> getHistory() const;
   
