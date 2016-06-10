@@ -38,7 +38,7 @@ public:
   /** Constructor.
    * @param ioService the io_service for this state machine instance
    */
-  StateMachine(boost::asio::io_service& ioService, DataModel* dataModel);
+  StateMachine(boost::asio::io_service& ioService, DataModel* dataModel, const std::string& machineName = "StateMachine");
   virtual ~StateMachine();
 
   State* getState(const std::string name, StateType stateType = StateType::State, bool create = false) override;

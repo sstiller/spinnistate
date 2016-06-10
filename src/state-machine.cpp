@@ -15,8 +15,8 @@
 namespace ssm // "Spinni state machine"
 {
   
-StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel* dataModel)
-: StateContainer(this, this),
+StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel* dataModel, const std::string& machineName)
+: StateContainer(this, machineName, this),
   ioService(ioService),
   dataModel(dataModel),
   stateMachineInitialized(false),
@@ -44,7 +44,7 @@ State* StateMachine::getState(const std::string name, StateType stateType, bool 
     }
   }
 
-  return(addState(name, nullptr, stateType));
+  return(addState(name, stateType));
 }
 
 void StateMachine::announceState(State* newState)
@@ -263,17 +263,12 @@ TransitionSet StateMachine::selectTransitions(const Event& event)
                                                     });
   for(State* currentState : atomicStates)
   {
-#error changed standard? TODO: Rewrite!
-    do
+    Transition* retTransition = currentState->findExecutibleTransition(event);
+    if(retTransition)
     {
-      Transition* retTransition = currentState->findExecutibleTransition(event);
-      if(retTransition)
-      {
-        retSet.addElement(retTransition); // double entries will not happen because of std::set
-        break; // continue for loop
-      }
-      currentState = currentState->getParent(); // if no parent state --> top level state
-    }while(currentState);
+      retSet.addElement(retTransition); // double entries will not happen because of std::set
+      break; // continue for loop
+    }
   }
   if(retSet.size() > 1)
   {

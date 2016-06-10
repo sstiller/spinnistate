@@ -11,8 +11,7 @@ namespace ssm // "Spinni state machine"
 {
 
 State::State(const std::string& name, StateMachine* stateMachine, StateContainer* parent, StateType stateType)
-: StateMachineElement(stateMachine, name),
-  StateContainer(stateMachine, parent),
+: StateContainer(stateMachine, name, parent),
   ActionContainer(stateMachine),
   stateType(stateType)
 {
@@ -41,7 +40,7 @@ State* State::getState(const std::string name, StateType stateType, bool create)
       throw;
     }
   }
-  return(addState(name, this, stateType));
+  return(addState(name, stateType));
 }
 
 Transition* State::addTransition(const std::string& name, const std::string& guard)
@@ -52,13 +51,23 @@ Transition* State::addTransition(const std::string& name, const std::string& gua
 
 Transition* State::findExecutibleTransition(const Event& event)
 {
-  std::cout << __func__ << "(" << event.getDescriptor() << ") in state " << getName() << " called." << std::endl; 
+  std::cout << __func__ << "(" << event.getDescriptor() << ") in state " << getName() << " called." << std::endl;
   for(auto& currentTransition : transitions)
   {
     if(currentTransition->conditionsSatisfied(event))
     {
       std::cout << __func__ << "(): " << getName() << " found transition." << std::endl;
       return(currentTransition.get());
+    }
+  }
+  // not found. look one up
+  StateContainer* parent = getParent();
+  if(parent != getStateMachine())
+  {
+    State* parentState = static_cast<State*>(parent);
+    if(parentState)
+    {
+      return(parentState->findExecutibleTransition(event));
     }
   }
   std::cout << __func__ << "(): " << getName() << " no transition." << std::endl;

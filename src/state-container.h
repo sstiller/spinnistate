@@ -15,16 +15,17 @@
 // local includes
 #include "libspinnistate.h"
 #include "list.h"
+#include "state-machine-element.h"
 
 namespace ssm // "Spinni state machine"
 {
 class StateMachine;
 class State;
 
-class StateContainer
+class StateContainer : public StateMachineElement
 {
 public:
-  StateContainer(StateMachine* stateMachine, StateContainer* parent);
+  StateContainer(StateMachine* stateMachine, const std::string& name, StateContainer* parent);
   virtual ~StateContainer() = default;
   
   /** get a state from the container
@@ -54,7 +55,7 @@ public:
    * @throws std::logic_error if a state with the given name already exists 
    * @return reference to the requested state
    */
-  State* addState(const std::string name, State* parentState, StateType stateType);
+  State* addState(const std::string name, StateType stateType);
 
   /** get a state from the container
    * @param name the name of the wanted state
@@ -71,7 +72,6 @@ protected:
 
 private:
   StateContainer* parentContainer; ///< stateMachine if no parent state
-  StateMachine* stateMachine;
 };
 
 } // namespace ssm

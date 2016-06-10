@@ -138,7 +138,7 @@ std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
   }
   // else
 std::cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << std::endl;
-  return State::findLCCA(tStates.toList().append(srcState));
+  return srcState->findLCCA(tStates.toList().append(srcState));
 }
 
 OrderedSet<State*> Transition::getEffectiveTargetStates() const

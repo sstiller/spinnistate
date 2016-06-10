@@ -16,16 +16,16 @@ int main(void)
 
   // adding (sub)states
   ssm::State* hello1State = stateMachine.getState("Hello1", ssm::StateType::State, true);
-  ssm::State* hello12State = hello1State->getState("Hello12", ssm::StateType::State, true);
+  //ssm::State* hello12State = hello1State->getState("Hello12", ssm::StateType::State, true);
   ssm::State* hello2State = stateMachine.getState("Hello2", ssm::StateType::State, true);
   
   // check parents
-  if(hello1State != hello12State->getParent())
-  {
-    std::cerr << "Error: Wrong parent." << std::endl;
-    return(1);
-  }
-  std::cout << "OK: Parent correct." << std::endl;
+//  if(hello1State != hello12State->getParent())
+//  {
+//    std::cerr << "Error: Wrong parent." << std::endl;
+//    return(1);
+//  }
+//  std::cout << "OK: Parent correct." << std::endl;
 
   // test action container
   hello1State->addOnEntryAction("OnEntryFunction");
@@ -48,14 +48,14 @@ int main(void)
   {
     std::cout << "OK: Exception 2 caught: " << exc.what() << std::endl;
   }
-  try{
-    hello12State->getState("Hello1", ssm::StateType::State, true);
-    std::cerr << "Error: No Exception 3 (double state name)." << std::endl;
-    return(1);
-  }catch(std::exception& exc)
-  {
-    std::cout << "OK: Exception 3 caught: " << exc.what() << std::endl;
-  }
+//  try{
+//    hello12State->getState("Hello1", ssm::StateType::State, true);
+//    std::cerr << "Error: No Exception 3 (double state name)." << std::endl;
+//    return(1);
+//  }catch(std::exception& exc)
+//  {
+//    std::cout << "OK: Exception 3 caught: " << exc.what() << std::endl;
+//  }
 
   // data model
   try{

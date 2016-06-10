@@ -24,7 +24,7 @@ namespace ssm // "Spinni state machine"
 {
 class Transition;
 
-class State : public StateMachineElement, public StateContainer, public ActionContainer
+class State : public StateContainer, public ActionContainer
 {
 public:
   State() = delete;
@@ -42,7 +42,8 @@ public:
 
   Transition* addTransition(const std::string& name, const std::string& guard);
 
-  /** Look if a transition of this state is executible
+  /** Look if a transition of this state is executible.
+   * If no transition is found, it looks in the anchestors.
    * @param event the currently active event (may be empty string)
    * @return pointer to the first transition with matching conditions or nullptr if none found
    */

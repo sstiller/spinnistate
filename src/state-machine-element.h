@@ -9,8 +9,6 @@
 
 #include <string>
 
-
-
 namespace ssm // "Spinni state machine"
 {
 class StateMachine;
