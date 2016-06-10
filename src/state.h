@@ -35,7 +35,7 @@ public:
    * @param stateMachine the state machine the state belongs to
    * @throws std::invalid_argument if name or stateMachine not valid or a state with the same name already exists
    */
-  State(const std::string& name, StateMachine* stateMachine, State* parent = nullptr, StateType stateType = StateType::State);
+  State(const std::string& name, StateMachine* stateMachine, StateContainer* parent = nullptr, StateType stateType = StateType::State);
   virtual ~State();
 
   virtual State* getState(const std::string name, StateType stateType = StateType::State, bool create = false) override;
@@ -48,19 +48,11 @@ public:
    */
   Transition* findExecutibleTransition(const Event& event);
   
-  State* getParent() const;
-
   /** returns true if the state is a real ancestor of the other state.
    * Returns fals if not ancestor or this == other
    */
   bool isAncestorOf(const State* other) const;
 
-  /** Returns 'true' if state1 is a descendant of state2.
-    * (a child, or a child of a child, or a child of a child of a child, etc.)
-    * Otherwise returns 'false'.
-    */
-  bool isDescendantOf(const State* other) const;
-  
   StateType getStateType() const;
 
   /** returns true if the state is a parallel state. */
@@ -101,7 +93,6 @@ public:
   StateContainer* findLCCA(List<State*> stateList);
   
 private:
-  State* parentState; ///< nullptr if no parent state
   std::vector<std::unique_ptr<Transition> > transitions;
   StateType stateType;
 };

@@ -10,11 +10,10 @@
 namespace ssm // "Spinni state machine"
 {
 
-State::State(const std::string& name, StateMachine* stateMachine, State* parent, StateType stateType)
+State::State(const std::string& name, StateMachine* stateMachine, StateContainer* parent, StateType stateType)
 : StateMachineElement(stateMachine, name),
-  StateContainer(stateMachine),
+  StateContainer(stateMachine, parent),
   ActionContainer(stateMachine),
-  parentState(parent),
   stateType(stateType)
 {
   if(getName().size() == 0)
@@ -66,20 +65,15 @@ Transition* State::findExecutibleTransition(const Event& event)
   return(nullptr);
 }
 
-State* State::getParent() const
-{
-  return(parentState);
-}
-
 bool State::isAncestorOf(const State* other) const
 {
   if(!other)
   {
     return(false);
   }
-  for(State* currentState = other->getParent(); currentState != nullptr; currentState = currentState->getParent())
+  for(StateContainer* currentContainer = other->getParent(); currentContainer != getStateMachine(); currentContainer = currentContainer->getParent())
   {
-    if(currentState == this)
+    if(currentContainer == this)
     {
       return(true);
     }
@@ -87,16 +81,7 @@ bool State::isAncestorOf(const State* other) const
   return(false);
 }
 
-bool State::isDescendantOf(const State* other) const
-{
-  if(!other)
-  {
-    std::cout << getName() << "." << __func__ << "(nullptr) called." << std::endl;
-    return(false);
-  }
-  std::cout << getName() << "." << __func__ << "(" << other->getName() << ") called." << std::endl;
-  return(other->isAncestorOf(this));
-}
+
 
 StateType State::getStateType() const
 {
@@ -147,9 +132,9 @@ List<State*> State::getProperAncestors(const State* state2) const
     return(retList);
   }
    
-  for(auto currentAncestor = getParent(); currentAncestor && (currentAncestor != state2); currentAncestor = currentAncestor->getParent())
+  for(auto currentAncestor = getParent(); (currentAncestor != getStateMachine()) && (currentAncestor != state2); currentAncestor = currentAncestor->getParent())
   {
-    retList.addEntry(currentAncestor);
+    retList.addEntry(static_cast<State*>(currentAncestor));
   } // for getParents
 
   return(retList);

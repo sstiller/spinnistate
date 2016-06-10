@@ -16,7 +16,7 @@ namespace ssm // "Spinni state machine"
 {
   
 StateMachine::StateMachine(boost::asio::io_service& ioService, DataModel* dataModel)
-: StateContainer(this),
+: StateContainer(this, this),
   ioService(ioService),
   dataModel(dataModel),
   stateMachineInitialized(false),
@@ -257,8 +257,13 @@ TransitionSet StateMachine::selectTransitions(const Event& event)
   {
     throw(std::logic_error("Failed finding transitions, configuration is empty."));
   }
-  for(State* currentState : configuration)
+  auto atomicStates = configuration.toList().filter([](State* state)
+                                                    {
+                                                      return(state->isAtomicState());
+                                                    });
+  for(State* currentState : atomicStates)
   {
+#error changed standard? TODO: Rewrite!
     do
     {
       Transition* retTransition = currentState->findExecutibleTransition(event);

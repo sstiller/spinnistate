@@ -12,9 +12,10 @@ namespace ssm // "Spinni state machine"
 {
 
 
-StateContainer::StateContainer(StateMachine* stateMachine)
+StateContainer::StateContainer(StateMachine* stateMachine, StateContainer* parent)
 : entryState(nullptr),
-  stateMachine(stateMachine)  
+  stateMachine(stateMachine),
+  parentContainer(parent)
 {
   if(!stateMachine)
   {
@@ -22,8 +23,27 @@ StateContainer::StateContainer(StateMachine* stateMachine)
   }
 }
 
-StateContainer::~StateContainer()
+StateContainer* StateContainer::getParent() const
 {
+  return(parentContainer);
+}
+
+bool StateContainer::isDescendantOf(const StateContainer* other) const
+{
+  if(!other)
+  {
+    std::cout << getName() << "." << __func__ << "(nullptr) called." << std::endl;
+    return(false);
+  }
+  std::cout << getName() << "." << __func__ << "(" << other->getName() << ") called." << std::endl;
+  for(StateContainer* currentContainer = this->getParent(); currentContainer != getStateMachine(); currentContainer = currentContainer->getParent())
+  {
+    if(currentContainer == other)
+    {
+      return(true);
+    }
+  }
+  return(false);
 }
 
 State* StateContainer::addState(const std::string name, State* parentState, StateType stateType)

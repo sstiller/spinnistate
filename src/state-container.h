@@ -24,8 +24,8 @@ class State;
 class StateContainer
 {
 public:
-  StateContainer(StateMachine* stateMachine);
-  virtual ~StateContainer();
+  StateContainer(StateMachine* stateMachine, StateContainer* parent);
+  virtual ~StateContainer() = default;
   
   /** get a state from the container
    * @param name the name of the wanted state
@@ -34,6 +34,14 @@ public:
    * @return reference to the requested state
    */
   virtual State* getState(const std::string name, StateType stateType = StateType::State, bool create = false) = 0;
+
+  StateContainer* getParent() const;
+
+  /** Returns 'true' if state1 is a descendant of state2.
+    * (a child, or a child of a child, or a child of a child of a child, etc.)
+    * Otherwise returns 'false'.
+    */
+  bool isDescendantOf(const StateContainer* other) const;
 
   List<State*> getHistory() const;
   
@@ -62,6 +70,7 @@ protected:
   State* entryState;
 
 private:
+  StateContainer* parentContainer; ///< stateMachine if no parent state
   StateMachine* stateMachine;
 };
 
