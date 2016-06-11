@@ -27,11 +27,16 @@ public:
   const std::string& getName() const;
   unsigned int getElementNumber() const;
 
+  // predicates:
+  static bool documentOrder(const StateMachineElement* first, const StateMachineElement* second)
+  {
+    return(first->getElementNumber() < second->getElementNumber());
+  }
   static bool entryOrder(const StateMachineElement* first, const StateMachineElement* second)
   {
     // Ancestors precede descendants, with document order being used to break ties
     // (Note:since ancestors precede descendants, this is equivalent to document order.)
-    return(first->getElementNumber() < second->getElementNumber());
+    return(documentOrder(first, second));
   }
   static bool exitOrder(const StateMachineElement* first, const StateMachineElement* second)    
   {

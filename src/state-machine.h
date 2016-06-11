@@ -122,7 +122,13 @@ protected:
   void microstep(List<Transition*> enabledTransitions);
   void exitStates(List<Transition*>&enabledTransitions);
   void executeTransitionContent(List<Transition*>&enabledTransitions);
+
   void enterStates(List<Transition*>&enabledTransitions);
+  void computeEntrySet(List<Transition*>& transitions,
+                       OrderedSet<State*>& statesToEnter,
+                       OrderedSet<State*>sstatesForDefaultEntry,
+                       HashTable<std::string,
+                       State*>& defaultHistoryContent);
   
   /// the io_service for this state machine instance
   boost::asio::io_service& ioService;

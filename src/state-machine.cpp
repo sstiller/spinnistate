@@ -375,18 +375,17 @@ void StateMachine::enterStates(List<Transition*>& enabledTransitions)
   std::cerr << __PRETTY_FUNCTION__ << " IMPLEMENT ME!" << std::endl;
   OrderedSet<State*>statesToEnter;
   OrderedSet<State*>statesForDefaultEntry;
-#error implement me!
   // initialize the temporary table for default content in history states
-  HashTable defaultHistoryContent; 
-  computeEntrySet(enabledTransitions, statesToEnter, statesForDefaultEntry, defaultHistoryContent) 
+  HashTable<std::string, State*> defaultHistoryContent; 
+  computeEntrySet(enabledTransitions, statesToEnter, statesForDefaultEntry, defaultHistoryContent);
   for(auto s : statesToEnter.toList().sort(entryOrder))
   {
-    configuration.add(s)
-    statesToInvoke.add(s)
-    if(binding == "late" and s.isFirstEntry)
+    configuration.addElement(s);
+    statesToInvoke.addElement(s);
+    if(binding == "late" and s->isFirstEntry())
     {
-      initializeDataModel(datamodel.s,doc.s)
-      s.isFirstEntry = false
+      initializeDataModel(datamodel.s,doc.s);
+      s.isFirstEntry = false;
     }
     for(auto content : s.onentry.sort(documentOrder))
     {
@@ -419,6 +418,22 @@ void StateMachine::enterStates(List<Transition*>& enabledTransitions)
           }
         }
       }
+    }
+  }
+}
+
+void StateMachine::computeEntrySet(List<Transition*>& transitions, OrderedSet<State*>& statesToEnter, OrderedSet<State*>sstatesForDefaultEntry, HashTable<std::string, State*>& defaultHistoryContent)
+{
+  for(auto t : transitions)
+  {
+    for(auto s : t->getTarget)
+    {
+      addDescendantStatesToEnter(s,statesToEnter,statesForDefaultEntry, defaultHistoryContent)
+    }
+    auto ancestor = t->getTransitionDomain() 
+    for(auto s : t->getEffectiveTargetStates())
+    {
+      addAncestorStatesToEnter(s, ancestor, statesToEnter, statesForDefaultEntry, defaultHistoryContent);
     }
   }
 }

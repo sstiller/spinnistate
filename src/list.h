@@ -11,6 +11,7 @@
 // stl
 #include <functional>
 #include <list>
+#include <algorithm>
 
 namespace ssm {
 
@@ -120,6 +121,13 @@ public:
   {
     return(data.end());
   }
+
+  List<T> sort(std::function<bool (const T&, const T&)> f)
+  {
+    List<T>retList(*this);
+    std::sort(retList.data.begin(), retList.data.end(), f);
+    return(retList);
+  };
 
   unsigned int size()
   {
